@@ -6,9 +6,37 @@
   --font-heading: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-display: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Wearthly palette: warm neutrals with a muted olive anchor. */
+  --color-zinc-50: #f5f0e6;
+  --color-zinc-100: #eee7db;
+  --color-zinc-200: #d9cdbb;
+  --color-zinc-300: #c8b9a6;
+  --color-zinc-400: #a49382;
+  --color-zinc-500: #8a7968;
+  --color-zinc-600: #6f7161;
+  --color-zinc-700: #59614f;
+  --color-zinc-800: #48513f;
+  --color-zinc-900: #343a2f;
+  --color-zinc-950: #283024;
+  --color-emerald-50: #f0f2eb;
+  --color-emerald-100: #e0e5d8;
+  --color-emerald-200: #c6d0b9;
+  --color-emerald-300: #aebd9f;
+  --color-emerald-400: #8fa27b;
+  --color-emerald-500: #6f7f5f;
+  --color-emerald-600: #637451;
+  --color-emerald-700: #566546;
+  --color-emerald-800: #48553c;
+  --color-emerald-900: #3c4833;
 }
 
 :root {
+  --wearthly-cream: #f5f0e6;
+  --wearthly-olive: #6f7f5f;
+  --wearthly-oat: #d9cdbb;
+  --wearthly-taupe: #8a7968;
+  --wearthly-deep-olive: #343a2f;
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   font-optical-sizing: auto;
@@ -19,7 +47,8 @@
 
 body {
   font-family: inherit;
-  color: #18181b;
+  color: var(--wearthly-deep-olive);
+  background-color: var(--wearthly-cream);
 }
 
 /* Headings use the refined geometric Plus Jakarta Sans */

@@ -35,7 +35,7 @@ export const Footer = () => {
   const closeLegal = useCallback(() => setLegalDocument(null), []);
 
   return (
-    <footer className="border-t border-zinc-200 bg-white text-zinc-600 text-xs mt-16 selection:bg-emerald-100">
+    <footer className="border-t border-zinc-200 bg-[#D9CDBB] text-zinc-600 text-xs mt-16 selection:bg-emerald-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           
