@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAdminOrders, updateOrderStatus } from "../../../actions/orderActions";
 
@@ -8,51 +8,40 @@ const statusOptions = [
   ["processing", "Processing"],
   ["ready_for_pickup", "Ready for pickup"],
   ["shipped", "Shipped"],
-  ["completed", "Completed"],
+  ["completed", "Delivered"],
   ["canceled", "Canceled"],
 ];
-const allowedNextStatuses = {
-  pending: ["pending", "processing", "canceled"],
-  processing: ["processing", "ready_for_pickup", "shipped", "canceled"],
-  ready_for_pickup: ["ready_for_pickup", "completed", "canceled"],
-  shipped: ["shipped", "completed", "canceled"],
-  completed: ["completed"],
-  canceled: ["canceled"],
-};
 
 const money = (value) =>
   `₱${Number(value || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
 const statusLabel = (value) =>
-  String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  value === "completed"
+    ? "Delivered"
+    : String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
 export const AdminOrders = () => {
   const dispatch = useDispatch();
   const { loading, orders = [], error } = useSelector((state) => state.adminOrders);
-  const [draftStatuses, setDraftStatuses] = useState({});
   const [savingId, setSavingId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [actionError, setActionError] = useState("");
 
   useEffect(() => {
     dispatch(getAdminOrders());
   }, [dispatch]);
 
-  const pendingChanges = useMemo(
-    () => Object.keys(draftStatuses).filter((id) => {
-      const order = orders.find((item) => item._id === id);
-      return order && draftStatuses[id] !== order.orderStatus;
-    }),
-    [draftStatuses, orders],
-  );
-
-  const stageStatus = (orderId, orderStatus) => {
+  const showDetails = (order) => {
     setActionError("");
-    setDraftStatuses((current) => ({ ...current, [orderId]: orderStatus }));
+    setSelectedOrder(order);
+    setSelectedStatus(order.orderStatus);
   };
 
-  const submitStatus = async (order) => {
-    const nextStatus = draftStatuses[order._id] || order.orderStatus;
+  const submitStatus = async () => {
+    const order = selectedOrder;
+    const nextStatus = selectedStatus;
+    if (!order || nextStatus === order.orderStatus) return;
     if (nextStatus === order.orderStatus) return;
 
     setSavingId(order._id);
@@ -61,11 +50,7 @@ export const AdminOrders = () => {
     setSavingId(null);
 
     if (result?.success) {
-      setDraftStatuses((current) => {
-        const next = { ...current };
-        delete next[order._id];
-        return next;
-      });
+      setSelectedOrder((current) => current ? { ...current, orderStatus: nextStatus } : current);
       dispatch(getAdminOrders());
     } else {
       setActionError(result?.message || "The order status could not be updated.");
@@ -91,13 +76,6 @@ export const AdminOrders = () => {
         </p>
       )}
 
-      {pendingChanges.length > 0 && (
-        <p className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded text-xs">
-          You have {pendingChanges.length} staged fulfillment change{pendingChanges.length === 1 ? "" : "s"}.
-          Click Submit on the corresponding order to apply it.
-        </p>
-      )}
-
       {loading ? (
         <p className="text-sm text-zinc-500">Loading orders...</p>
       ) : (
@@ -110,14 +88,11 @@ export const AdminOrders = () => {
                 <th className="p-4">Items</th>
                 <th className="p-4">Total</th>
                 <th className="p-4">Fulfillment</th>
-                <th className="p-4 min-w-64">Change status</th>
                 <th className="p-4">Order info</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => {
-                const draft = draftStatuses[order._id] || order.orderStatus;
-                const hasChange = draft !== order.orderStatus;
                 return (
                   <tr key={order._id} className="border-b last:border-0 align-top">
                     <td className="p-4 font-semibold whitespace-nowrap">{order.orderNumber}</td>
@@ -129,33 +104,8 @@ export const AdminOrders = () => {
                     <td className="p-4 whitespace-nowrap">{money(order.totalPrice)}</td>
                     <td className="p-4 capitalize whitespace-nowrap">{statusLabel(order.orderStatus)}</td>
                     <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={draft}
-                          onChange={(event) => stageStatus(order._id, event.target.value)}
-                          disabled={savingId === order._id || ["completed", "canceled"].includes(order.orderStatus)}
-                          className="border rounded px-2 py-1.5 bg-white"
-                        >
-                          {(allowedNextStatuses[order.orderStatus] || [order.orderStatus])
-                            .map((value) => statusOptions.find(([option]) => option === value))
-                            .filter(Boolean)
-                            .map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                          ))}
-                        </select>
-                        <button
-                          type="button"
-                          onClick={() => submitStatus(order)}
-                          disabled={!hasChange || savingId === order._id}
-                          className="rounded bg-emerald-700 px-3 py-1.5 text-white font-semibold disabled:opacity-40"
-                        >
-                          {savingId === order._id ? "Saving..." : "Submit"}
-                        </button>
-                      </div>
-                    </td>
-                    <td className="p-4">
                       <div className="flex gap-2 whitespace-nowrap">
-                        <button type="button" onClick={() => setSelectedOrder(order)} className="border rounded px-2.5 py-1.5 font-semibold hover:bg-zinc-50">
+                        <button type="button" onClick={() => showDetails(order)} className="border rounded px-2.5 py-1.5 font-semibold hover:bg-zinc-50">
                           View details
                         </button>
                         <button type="button" onClick={() => openReceipt(order._id)} className="border rounded px-2.5 py-1.5 font-semibold hover:bg-zinc-50">
@@ -183,6 +133,32 @@ export const AdminOrders = () => {
               <button type="button" onClick={() => setSelectedOrder(null)} className="text-zinc-500 hover:text-zinc-900 text-xl" aria-label="Close order details">×</button>
             </div>
             <div className="p-5 space-y-5 text-sm">
+              <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+                <h3 className="text-xs uppercase tracking-wider font-bold text-emerald-800 mb-2">Fulfillment status</h3>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <select
+                    value={selectedStatus}
+                    onChange={(event) => setSelectedStatus(event.target.value)}
+                    disabled={savingId === selectedOrder._id || ["completed", "canceled"].includes(selectedOrder.orderStatus)}
+                    className="border rounded px-3 py-2 bg-white flex-1"
+                  >
+                    {statusOptions.map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={submitStatus}
+                    disabled={selectedStatus === selectedOrder.orderStatus || savingId === selectedOrder._id || ["completed", "canceled"].includes(selectedOrder.orderStatus)}
+                    className="rounded bg-emerald-700 px-4 py-2 text-white font-semibold disabled:opacity-40"
+                  >
+                    {savingId === selectedOrder._id ? "Saving..." : "Submit status"}
+                  </button>
+                </div>
+                {["completed", "canceled"].includes(selectedOrder.orderStatus) && (
+                  <p className="text-xs text-emerald-800 mt-2">This order is {selectedOrder.orderStatus === "completed" ? "delivered" : "canceled"} and can no longer be changed.</p>
+                )}
+              </section>
               <section>
                 <h3 className="text-xs uppercase tracking-wider font-bold text-zinc-500 mb-2">Customer</h3>
                 <p>{selectedOrder.user?.firstName} {selectedOrder.user?.lastName}</p>
