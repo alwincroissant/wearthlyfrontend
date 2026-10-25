@@ -33,12 +33,6 @@ const brandStorySteps = [
   },
 ];
 
-const sampleProducts = [
-  { name: "Everyday Essential", image: "/product1.jpeg", price: "₱1,290" },
-  { name: "Soft Structure Shirt", image: "/product2.jpeg", price: "₱1,590" },
-  { name: "Earthbound Layer", image: "/product3.jpeg", price: "₱1,890" },
-];
-
 const testimonials = [
   {
     author: "Sofia Ramos",
@@ -320,7 +314,7 @@ export const Homepage = ({ onNavigate }) => {
         <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-28 pb-16 sm:pt-36 sm:pb-24">
           <div className="max-w-2xl anim-stagger">
             <img
-              src="/logowearthly.png"
+              src="/wearthlylogo.ico"
               alt="Wearthly"
               className="h-14 sm:h-20 w-auto object-contain object-left mb-8"
             />
@@ -391,55 +385,7 @@ export const Homepage = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* 3. WEARTHLY EDIT */}
-      <ScrollReveal threshold={0.08} duration={400}>
-        <section className="w-full bg-[#f7f7f4] py-16 sm:py-20 border-b border-zinc-200">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-zinc-900">
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-emerald-800 font-bold block mb-2">
-                  The Wearthly Edit
-                </span>
-                <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-zinc-950 font-display">
-                  Made for the moving life.
-                </h2>
-              </div>
-              <p className="max-w-sm text-xs sm:text-sm leading-relaxed text-zinc-600">
-                Sample pieces, real-world comfort, and a point of view that keeps
-                everyday style feeling intentional.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8">
-              {sampleProducts.map((product) => (
-                <Link
-                  to="/shop"
-                  key={product.name}
-                  className="group bg-white border border-zinc-200 rounded-xl overflow-hidden"
-                >
-                  <div className="aspect-[4/5] overflow-hidden bg-zinc-100">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-4 flex items-center justify-between gap-3">
-                    <span className="text-xs font-bold uppercase tracking-wide">
-                      {product.name}
-                    </span>
-                    <span className="text-xs font-mono text-zinc-600">
-                      {product.price}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* 4. FEATURED CATALOG SPOTLIGHT CAROUSEL */}
+      {/* 3. FEATURED CATALOG SPOTLIGHT CAROUSEL */}
       <ScrollReveal threshold={0.08} duration={400}>
         <section className="w-full bg-white py-14 sm:py-18 border-b border-zinc-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">

@@ -20,7 +20,6 @@ const CLIENT_CARE_LINKS = [
 
 const BRAND_LINKS = [
   { label: "About Wearthly", to: "/about" },
-  { label: "Wearthly Edit", to: "/#lookbook" },
   { label: "Our Story", to: "/about" },
   { label: "Store Locations", to: "/about#contact" },
   { label: "Privacy Policy", document: "privacy" },
@@ -43,7 +42,7 @@ export const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5 w-fit">
-              <img src="/logowearthly.png" alt="Wearthly" className="w-9 h-9 rounded-full object-cover" />
+              <img src="/wearthlylogo.ico" alt="Wearthly" className="w-9 h-9 object-contain" />
               <span className="text-sm sm:text-base font-extrabold tracking-[0.22em] text-zinc-950 uppercase">Wearthly</span>
             </Link>
             <p className="text-zinc-500 leading-relaxed max-w-sm text-xs">

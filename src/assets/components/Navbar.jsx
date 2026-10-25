@@ -150,7 +150,7 @@ export const Navbar = ({ currentPage }) => {
             className="flex items-center gap-2.5 cursor-pointer focus:outline-none group"
           >
             <img
-              src="/logowearthly.png"
+              src="/wearthlylogo.ico"
               alt="Wearthly"
               className={`h-8 w-auto object-contain transition-transform duration-150 group-hover:scale-105 ${
                 overDark ? "brightness-0 invert" : ""
@@ -206,7 +206,7 @@ export const Navbar = ({ currentPage }) => {
         <div className="flex items-center gap-2.5">
           <form
             onSubmit={handleSearch}
-            className={`hidden lg:flex items-center w-48 xl:w-60 h-9 rounded-full border transition-colors ${
+            className={`flex items-center w-28 sm:w-40 lg:w-48 xl:w-60 h-9 rounded-full border transition-colors ${
               overDark
                 ? "border-white/25 bg-white/10 text-white focus-within:border-white/60 focus-within:bg-white/15"
                 : "border-zinc-200 bg-white text-zinc-700 shadow-sm focus-within:border-emerald-500"
@@ -228,7 +228,7 @@ export const Navbar = ({ currentPage }) => {
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search Wearthly"
+              placeholder="Search"
               aria-label="Search Wearthly products"
               className={`min-w-0 flex-1 bg-transparent px-2.5 text-xs outline-none placeholder:transition-colors ${
                 overDark
