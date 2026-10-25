@@ -106,9 +106,13 @@ export const updateOrderStatus = (orderId, statusData) => async (dispatch) => {
       statusData,
       { withCredentials: true }
     )
-    dispatch({ type: UPDATE_ORDER_STATUS_SUCCESS, payload: data.order })
+    const order = data.order || data.data?.order
+    dispatch({ type: UPDATE_ORDER_STATUS_SUCCESS, payload: order })
+    return { success: true, order }
   } catch (error) {
-    dispatch({ type: UPDATE_ORDER_STATUS_FAIL, payload: getErrorMessage(error) })
+    const message = getErrorMessage(error)
+    dispatch({ type: UPDATE_ORDER_STATUS_FAIL, payload: message })
+    return { success: false, message }
   }
 }
 
