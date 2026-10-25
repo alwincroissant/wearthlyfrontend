@@ -410,10 +410,10 @@ export const AdminDashboard = ({ onSelectOrder }) => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 text-balance">
-            Dealership overview
+            Wearthly overview
           </h1>
           <p className="text-xs text-zinc-500 mt-1">
-            Sales, credit screening, and stock levels for the current period.
+            Orders, product performance, and stock levels for the current period.
           </p>
         </div>
 
@@ -441,10 +441,7 @@ export const AdminDashboard = ({ onSelectOrder }) => {
             to="/admin/orders"
             className="inline-flex items-center justify-center !h-8 px-3 rounded bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
           >
-            <span>
-              Review applications
-              {metrics.pendingScreeningCount > 0 ? ` (${metrics.pendingScreeningCount})` : ""}
-            </span>
+            <span>Review orders</span>
           </Link>
           <Link
             to="/admin/inventory"
@@ -518,26 +515,24 @@ export const AdminDashboard = ({ onSelectOrder }) => {
       <div className="border-y border-zinc-200 bg-white grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-zinc-200 py-3">
         <div className="px-4 py-2 space-y-1">
           <span className="block font-mono uppercase text-[10px] tracking-wider text-zinc-500">
-            Active installments
+            Orders in progress
           </span>
           <p className="text-2xl font-bold tracking-tight text-zinc-900 font-mono">
-            {loading ? "..." : `${metrics.activeInstallmentsCount} active`}
+            {loading ? "..." : `${metrics.totalOrders} total`}
           </p>
           <p className="text-[11px] text-zinc-500">
-            {loading
-              ? "Financed contracts in progress"
-              : `${fmtCurrency(metrics.activeInstallmentsValue)} financed`}
+            Direct cash transactions from customers
           </p>
         </div>
 
         <div className="px-4 py-2 space-y-1">
           <span className="block font-mono uppercase text-[10px] tracking-wider text-zinc-500">
-            Credit screening queue
+            Order queue
           </span>
           <p className="text-2xl font-bold tracking-tight text-amber-700 font-mono">
-            {loading ? "..." : `${metrics.pendingScreeningCount} pending`}
+            {loading ? "..." : `${metrics.totalOrders} recorded`}
           </p>
-          <p className="text-[11px] text-zinc-500">Awaiting a credit decision</p>
+          <p className="text-[11px] text-zinc-500">Manage fulfillment from Orders</p>
         </div>
 
         <div className="px-4 py-2 space-y-1">

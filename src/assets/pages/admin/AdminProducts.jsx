@@ -242,10 +242,7 @@ const ProductImageManager = ({
 
 const productSchema = yup.object({
   name: yup.string().trim().required("Product name is required"),
-  category: yup.string().trim().required("Category is required"),
-  brand: yup.string().trim().required("Brand is required"),
-  description: yup.string().default(""),
-  compatibleModels: yup.string().default(""),
+  description: yup.string().trim().required("Description is required"),
   price: yup
     .number()
     .typeError("Price must be a valid number")
@@ -261,19 +258,6 @@ const productSchema = yup.object({
     .typeError("Threshold must be a valid number")
     .required("Low stock threshold is required")
     .min(1, "Threshold must be at least 1"),
-  installmentEligible: yup.boolean().default(false),
-  minInstallmentPrice: yup
-    .number()
-    .transform((val, orig) => (orig === "" || orig === null || orig === undefined ? 0 : val))
-    .nullable()
-    .when("installmentEligible", {
-      is: true,
-      then: (schema) =>
-        schema
-          .required("Minimum installment price is required")
-          .min(0, "Cannot be negative"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
   isFeatured: yup.boolean().default(false),
 });
 
@@ -281,8 +265,6 @@ const ProductModal = ({
   isOpen,
   onClose,
   editingProduct,
-  categories,
-  brands,
   isLoading,
 }) => {
   const dispatch = useDispatch();
@@ -315,22 +297,15 @@ const ProductModal = ({
     },
   });
 
-  const installmentEligible = watch("installmentEligible");
-
   // Populate form and existing images when editing or reset on close
   useEffect(() => {
     if (!isOpen) {
       reset({
         name: "",
-        category: "",
-        brand: "",
         description: "",
-        compatibleModels: "",
         price: "",
         stock: "",
         lowStockThreshold: 5,
-        installmentEligible: false,
-        minInstallmentPrice: "",
         isFeatured: false,
         adjustmentReason: "",
         adjustmentReasonCustom: "",
@@ -342,15 +317,10 @@ const ProductModal = ({
     if (editingProduct) {
       reset({
         name: editingProduct.name || "",
-        category: editingProduct.category?._id || editingProduct.category || "",
-        brand: editingProduct.brand?._id || editingProduct.brand || "",
         description: editingProduct.description || "",
-        compatibleModels: (editingProduct.compatibleModels || []).join(", "),
         price: editingProduct.price ?? "",
         stock: editingProduct.stock ?? "",
         lowStockThreshold: editingProduct.lowStockThreshold ?? 5,
-        installmentEligible: editingProduct.installmentEligible || false,
-        minInstallmentPrice: editingProduct.minInstallmentPrice ?? "",
         isFeatured: Boolean(editingProduct.isFeatured),
         adjustmentReason: "",
         adjustmentReasonCustom: "",
@@ -365,15 +335,10 @@ const ProductModal = ({
     } else {
       reset({
         name: "",
-        category: "",
-        brand: "",
         description: "",
-        compatibleModels: "",
         price: "",
         stock: "",
         lowStockThreshold: 5,
-        installmentEligible: false,
-        minInstallmentPrice: "",
         isFeatured: false,
         adjustmentReason: "",
         adjustmentReasonCustom: "",
@@ -454,19 +419,7 @@ const ProductModal = ({
       price: Number(data.price),
       stock: Number(data.stock),
       lowStockThreshold: Number(data.lowStockThreshold),
-      compatibleModels: data.compatibleModels
-        ? data.compatibleModels
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : [],
-      installmentEligible: Boolean(data.installmentEligible),
-      minInstallmentPrice: data.installmentEligible
-        ? Number(data.minInstallmentPrice || 0)
-        : 0,
       isFeatured: Boolean(data.isFeatured),
-      category: data.category,
-      brand: data.brand,
       images: imageList.map((item) => item.data),
       ...(isEdit && adjustmentReason ? { adjustmentReason } : {}),
     };
@@ -526,7 +479,7 @@ const ProductModal = ({
               id="product-name"
               type="text"
               {...register("name")}
-              placeholder="Yamaha NMAX 155 ABS"
+              placeholder="e.g. Everyday Essential Shirt"
               className={`w-full h-9 px-3 border rounded transition-colors focus:outline-2 focus:outline-offset-1 ${
                 errors.name
                   ? "border-rose-500 focus:border-rose-500 focus:outline-rose-500"
@@ -538,57 +491,6 @@ const ProductModal = ({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label htmlFor="product-category" className="font-semibold text-zinc-900">
-                Category *
-              </label>
-              <select
-                id="product-category"
-                {...register("category")}
-                className={`w-full h-9 px-2 border rounded transition-colors focus:outline-2 focus:outline-offset-1 ${
-                  errors.category
-                    ? "border-rose-500 focus:border-rose-500 focus:outline-rose-500"
-                    : "border-zinc-300 focus:border-emerald-700 focus:outline-emerald-700"
-                }`}
-              >
-                <option value="">Select category</option>
-                {categories.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-              {errors.category && (
-                <span className="text-[11px] text-rose-600 block">{errors.category.message}</span>
-              )}
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="product-brand" className="font-semibold text-zinc-900">
-                Brand *
-              </label>
-              <select
-                id="product-brand"
-                {...register("brand")}
-                className={`w-full h-9 px-2 border rounded transition-colors focus:outline-2 focus:outline-offset-1 ${
-                  errors.brand
-                    ? "border-rose-500 focus:border-rose-500 focus:outline-rose-500"
-                    : "border-zinc-300 focus:border-emerald-700 focus:outline-emerald-700"
-                }`}
-              >
-                <option value="">Select brand</option>
-                {brands.map((b) => (
-                  <option key={b._id} value={b._id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-              {errors.brand && (
-                <span className="text-[11px] text-rose-600 block">{errors.brand.message}</span>
-              )}
-            </div>
-          </div>
-
           <div className="space-y-1">
             <label htmlFor="product-description" className="font-semibold text-zinc-900">
               Description
@@ -597,23 +499,9 @@ const ProductModal = ({
               id="product-description"
               rows={3}
               {...register("description")}
-              placeholder="Technical specifications, features, displacement"
+              placeholder="Describe the garment, materials, and fit"
               className="w-full p-3 border border-zinc-300 rounded resize-none transition-colors focus:border-emerald-700 focus:outline-2 focus:outline-offset-1 focus:outline-emerald-700"
             />
-          </div>
-
-          <div className="space-y-1">
-            <label htmlFor="product-models" className="font-semibold text-zinc-900">
-              Compatible models
-            </label>
-            <input
-              id="product-models"
-              type="text"
-              {...register("compatibleModels")}
-              placeholder="NMAX 155 V1, NMAX 155 V2, Aerox 155"
-              className="w-full h-9 px-3 border border-zinc-300 rounded font-mono transition-colors focus:border-emerald-700 focus:outline-2 focus:outline-offset-1 focus:outline-emerald-700"
-            />
-            <p className="text-[11px] text-zinc-500">Comma-separated list of models</p>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
@@ -695,43 +583,6 @@ const ProductModal = ({
                 </span>
               )}
             </div>
-          </div>
-
-          <div className="pt-2 border-t border-zinc-200 space-y-4">
-            <label className="flex items-center gap-2 cursor-pointer font-semibold text-zinc-900">
-              <input
-                type="checkbox"
-                {...register("installmentEligible")}
-                className="rounded text-emerald-700 w-3.5 h-3.5"
-              />
-              Enable installment financing
-            </label>
-            {installmentEligible && (
-              <div className="pl-5 space-y-1">
-                <label
-                  htmlFor="product-min-installment"
-                  className="text-[11px] text-zinc-600 font-medium"
-                >
-                  Minimum qualifying price (₱)
-                </label>
-                <input
-                  id="product-min-installment"
-                  type="number"
-                  min={0}
-                  {...register("minInstallmentPrice")}
-                  className={`w-48 h-8 px-2 border rounded font-mono transition-colors focus:outline-2 focus:outline-offset-1 ${
-                    errors.minInstallmentPrice
-                      ? "border-rose-500 focus:border-rose-500 focus:outline-rose-500"
-                      : "border-zinc-300 focus:border-emerald-700 focus:outline-emerald-700"
-                  }`}
-                />
-                {errors.minInstallmentPrice && (
-                  <span className="text-[11px] text-rose-600 block">
-                    {errors.minInstallmentPrice.message}
-                  </span>
-                )}
-              </div>
-            )}
           </div>
 
           <div className="pt-2 border-t border-zinc-200">
@@ -1053,27 +904,6 @@ export const AdminProducts = () => {
         },
       },
       {
-        field: "categoryBrand",
-        headerName: "Category and brand",
-        flex: 1,
-        minWidth: 150,
-        valueGetter: (value, row) => `${row.category?.name || "Unassigned"} ${row.brand?.name || "Unassigned"}`,
-        renderCell: (params) => {
-          const catName = params.row.category?.name || "Unassigned";
-          const brandName = params.row.brand?.name || "Unassigned";
-          return (
-            <div className="flex flex-col justify-center min-w-0 w-full leading-tight">
-              <span className="font-medium text-zinc-900 block truncate" title={catName}>
-                {catName}
-              </span>
-              <span className="text-[11px] text-zinc-500 block truncate" title={brandName}>
-                {brandName}
-              </span>
-            </div>
-          );
-        },
-      },
-      {
         field: "isArchived",
         headerName: "Status",
         width: 155,
@@ -1139,28 +969,6 @@ export const AdminProducts = () => {
                 </span>
               )}
             </div>
-          );
-        },
-      },
-      {
-        field: "installmentEligible",
-        headerName: "Financing",
-        width: 190,
-        renderCell: (params) => {
-          const p = params.row;
-          return p.installmentEligible ? (
-            <div className="flex flex-col justify-center leading-tight">
-              <span className="admin-table-badge text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200">
-                Eligible
-              </span>
-              {p.minInstallmentPrice > 0 && (
-                <span className="text-[11px] text-zinc-500 mt-1">
-                  Min ₱{Number(p.minInstallmentPrice).toLocaleString()}
-                </span>
-              )}
-            </div>
-          ) : (
-            <span className="text-[11px] text-zinc-500">Cash or COD</span>
           );
         },
       },
