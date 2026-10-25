@@ -42,7 +42,7 @@ export const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5 w-fit">
-              <img src="/wearthlylogo.ico" alt="Wearthly" className="w-9 h-9 object-contain" />
+              <img src="/wearthlylogo.ico" alt="Wearthly" className="w-9 h-9 rounded-full object-cover" />
               <span className="text-sm sm:text-base font-extrabold tracking-[0.22em] text-zinc-950 uppercase">Wearthly</span>
             </Link>
             <p className="text-zinc-500 leading-relaxed max-w-sm text-xs">

@@ -316,7 +316,7 @@ export const Homepage = ({ onNavigate }) => {
             <img
               src="/wearthlylogo.ico"
               alt="Wearthly"
-              className="h-14 sm:h-20 w-auto object-contain object-left mb-8"
+              className="h-14 w-14 sm:h-20 sm:w-20 rounded-full object-cover object-center mb-8"
             />
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-mono tracking-[0.25em] uppercase mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>

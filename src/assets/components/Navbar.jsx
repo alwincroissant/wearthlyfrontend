@@ -152,9 +152,7 @@ export const Navbar = ({ currentPage }) => {
             <img
               src="/wearthlylogo.ico"
               alt="Wearthly"
-              className={`h-8 w-auto object-contain transition-transform duration-150 group-hover:scale-105 ${
-                overDark ? "brightness-0 invert" : ""
-              }`}
+              className="h-8 w-8 rounded-full object-cover transition-transform duration-150 group-hover:scale-105"
             />
             <span
               className={`text-sm font-bold tracking-wider uppercase ${
