@@ -1,0 +1,685 @@
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ScrollReveal } from "../../components/ScrollReveal";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import {
+  profileAddressSchema,
+  profileInfoSchema,
+} from "../../schema/profileSchema.js";
+import {
+  addAddress,
+  deleteAddress,
+  getAddresses,
+  getProfile,
+  setDefaultAddress,
+  updateAddress,
+  updateProfile,
+} from "../../../actions/profileActions";
+
+export const Profile = ({ activeTab = "all" }) => {
+  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const {
+    profile,
+    addresses,
+    loading: profileLoading,
+    updating,
+    addressesUpdating,
+  } = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+  const [pendingProfilePhoto, setPendingProfilePhoto] = useState(null);
+  const persistedProfilePhoto =
+    profile?.profilePicture || user?.profilePicture || null;
+  const displayedProfilePhoto =
+    profilePhotoUrl === "" ? null : profilePhotoUrl || persistedProfilePhoto;
+
+  const {
+    register: registerProfile,
+    handleSubmit: handleSubmitProfile,
+    reset: resetProfile,
+    formState: { errors: profileErrors },
+  } = useForm({
+    mode: "onTouched",
+    resolver: yupResolver(profileInfoSchema),
+    defaultValues: {
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      contactNumber: user?.contactNumber || "",
+    },
+  });
+
+  const {
+    register: registerAddress,
+    handleSubmit: handleSubmitAddress,
+    reset: resetAddress,
+    formState: { errors: addressErrors },
+  } = useForm({
+    mode: "onTouched",
+    resolver: yupResolver(profileAddressSchema),
+    defaultValues: {
+      label: "",
+      street: "",
+      barangay: "",
+      city: "",
+      postalCode: "",
+    },
+  });
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(getProfile());
+      dispatch(getAddresses());
+    }
+  }, [dispatch, isAuthenticated]);
+
+  useEffect(() => {
+    if (!profile || isEditingProfile) return;
+    resetProfile({
+      firstName: profile.firstName ?? "",
+      lastName: profile.lastName ?? "",
+      contactNumber: profile.contactNumber ?? "",
+    });
+  }, [profile, isEditingProfile, resetProfile]);
+
+  const showNotice = (message) => {
+    toast.success(message);
+  };
+
+  const beginAddressEdit = (address) => {
+    setSelectedAddressId(address?._id ?? null);
+    resetAddress({
+      label: address?.label ?? "",
+      street: address?.street ?? "",
+      barangay: address?.barangay ?? "",
+      city: address?.city ?? "",
+      postalCode: address?.postalCode ?? "",
+    });
+    setIsEditingAddress(true);
+  };
+
+  const handleSaveProfile = async (data) => {
+    const saved = await dispatch(
+      updateProfile({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        contactNumber: data.contactNumber,
+      }),
+    );
+    if (saved) {
+      resetProfile(data);
+      setIsEditingProfile(false);
+      showNotice("Profile updated successfully.");
+    } else {
+      toast.error("Unable to update profile.");
+    }
+  };
+
+  const handleSaveAddress = async (data) => {
+    const saved = selectedAddressId
+      ? await dispatch(updateAddress(selectedAddressId, data))
+      : await dispatch(addAddress(data));
+    if (saved) {
+      setIsEditingAddress(false);
+      setSelectedAddressId(null);
+      showNotice("Address saved successfully.");
+    } else {
+      toast.error("Unable to save address.");
+    }
+  };
+
+  const handleDeleteAddress = async (id) => {
+    if (!window.confirm("Delete this address?")) return;
+    const deleted = await dispatch(deleteAddress(id));
+    if (deleted) {
+      showNotice("Address deleted successfully.");
+    } else {
+      toast.error("Unable to delete address.");
+    }
+  };
+
+  const handleSetDefaultAddress = async (id) => {
+    const updated = await dispatch(setDefaultAddress(id));
+    if (updated) {
+      showNotice("Default address updated.");
+    } else {
+      toast.error("Unable to update default address.");
+    }
+  };
+
+  const handleProfilePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("File must be an image.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image must be 2 MB or smaller.");
+      e.target.value = "";
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setProfilePhotoUrl(url);
+    setPendingProfilePhoto(file);
+  };
+
+  const handleApplyProfilePhoto = async () => {
+    if (!pendingProfilePhoto) return;
+
+    const saved = await dispatch(
+      updateProfile({ profilePicture: pendingProfilePhoto }),
+    );
+    if (saved) {
+      setPendingProfilePhoto(null);
+      showNotice("Profile picture updated successfully.");
+    } else {
+      toast.error("Unable to update profile picture.");
+    }
+  };
+
+  const currentTab = activeTab || "all";
+
+  if (!user || !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-white text-zinc-900 flex items-center justify-center">
+        <p className="text-sm text-zinc-500">
+          {loading || profileLoading
+            ? "Loading profile..."
+            : "Please log in to view your profile."}
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="min-h-screen bg-white text-zinc-900 antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 space-y-10">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-zinc-900">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
+              Customer Profile
+            </h1>
+            <p className="text-xs text-zinc-500 mt-1 max-w-xl">
+              Manage your personal credentials and registered delivery destinations.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Sub-tab Switcher: Profile vs Address vs Verification */}
+            <div className="flex items-center gap-1 border border-zinc-200 p-0.5 rounded-lg bg-zinc-50 text-xs font-medium max-w-full overflow-x-auto">
+              <Link
+                to="/profile"
+                className={`px-3 py-1.5 rounded-md whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                  currentTab === "all"
+                    ? "bg-white text-zinc-900 font-semibold shadow-2xs"
+                    : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                All
+              </Link>
+              <Link
+                to="/profile/personal-info"
+                className={`px-3 py-1.5 rounded-md whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                  currentTab === "profile"
+                    ? "bg-white text-zinc-900 font-semibold shadow-2xs"
+                    : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                Personal Profile
+              </Link>
+              <Link
+                to="/profile/address"
+                className={`px-3 py-1.5 rounded-md whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                  currentTab === "address"
+                    ? "bg-white text-zinc-900 font-semibold shadow-2xs"
+                    : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                Delivery Addresses
+              </Link>
+              <Link
+                to="/profile/verification"
+                className={`px-3 py-1.5 rounded-md whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                  currentTab === "verification"
+                    ? "bg-white text-zinc-900 font-semibold shadow-2xs"
+                    : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                Credit Verification
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 1: Customer Information - 2-Column Unboxed Settings Layout */}
+        {(currentTab === "all" || currentTab === "profile") && (
+          <ScrollReveal threshold={0.08} duration={600}>
+            <section className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-zinc-200">
+              <div className="md:col-span-4 space-y-1">
+                <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+                  Personal Information
+                </h2>
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  Primary account credentials and registered mobile contact used
+                  for courier verification and dispatch.
+                </p>
+                <div className="pt-2">
+                  <span className="inline-block text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                    Verified Customer
+                  </span>
+                </div>
+              </div>
+
+              <form
+                className="md:col-span-8 space-y-6"
+                onSubmit={handleSubmitProfile(handleSaveProfile)}
+                noValidate
+              >
+                {/* Profile Picture Upload & Preview */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 pb-6 border-b border-zinc-200">
+                  <div className="relative shrink-0 inline-block">
+                    <div className="w-16 h-16 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-lg ring-2 ring-zinc-200 overflow-hidden shadow-2xs">
+                      {displayedProfilePhoto ? (
+                        <img
+                          src={displayedProfilePhoto}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          className="w-full h-full object-cover"
+                          onError={() => {
+                            setProfilePhotoUrl("");
+                          }}
+                        />
+                      ) : (
+                        <span className="tracking-tighter">JD</span>
+                      )}
+                    </div>
+                    {/* Active indicator dot placed cleanly outside circular boundary, uncropped */}
+                    <span
+                      className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-600 ring-2 ring-white shadow-xs z-10 pointer-events-none"
+                      title="Active Customer"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-300 bg-white hover:bg-zinc-50 text-xs font-medium text-zinc-800 transition-colors shadow-2xs">
+                        <svg
+                          className="w-3.5 h-3.5 text-zinc-500"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                          <circle cx="12" cy="13" r="4" />
+                        </svg>
+                        <span>Upload new picture</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleProfilePhotoChange}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {pendingProfilePhoto && (
+                        <button
+                          type="button"
+                          onClick={handleApplyProfilePhoto}
+                          className="px-2.5 py-1.5 rounded-md text-xs text-white bg-emerald-600 hover:bg-emerald-700 transition-colors cursor-pointer"
+                        >
+                          Apply
+                        </button>
+                      )}
+                      {pendingProfilePhoto && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setProfilePhotoUrl(null);
+                            setPendingProfilePhoto(null);
+                            toast.info("Profile picture change cancelled.");
+                          }}
+                          className="px-2.5 py-1.5 rounded-md text-xs text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-zinc-500">
+                      JPG, PNG, or WebP. Displayed on official dealership quotes
+                      and service logs.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Form Fields Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label className="block text-zinc-700 font-semibold mb-1">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      readOnly={!isEditingProfile}
+                      {...registerProfile("firstName")}
+                      className={`h-9! w-full px-3 text-zinc-900 bg-zinc-50 border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                        profileErrors.firstName
+                          ? "border-red-500"
+                          : "border-zinc-300"
+                      }`}
+                    />
+                    {profileErrors.firstName && (
+                      <p className="mt-1 text-[11px] text-red-600">
+                        {profileErrors.firstName.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-700 font-semibold mb-1">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      readOnly={!isEditingProfile}
+                      {...registerProfile("lastName")}
+                      className={`h-9! w-full px-3 text-zinc-900 bg-zinc-50 border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                        profileErrors.lastName
+                          ? "border-red-500"
+                          : "border-zinc-300"
+                      }`}
+                    />
+                    {profileErrors.lastName && (
+                      <p className="mt-1 text-[11px] text-red-600">
+                        {profileErrors.lastName.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-700 font-semibold mb-1">
+                      Registered Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={user.email}
+                      readOnly
+                      className="h-9! w-full px-3 text-zinc-500 bg-zinc-100 border border-zinc-200 rounded-md cursor-not-allowed"
+                    />
+                    <span className="block text-[10px] text-zinc-400 mt-1">
+                      Unique account identifier
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-700 font-semibold mb-1">
+                      Mobile Contact Number
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      readOnly={!isEditingProfile}
+                      {...registerProfile("contactNumber")}
+                      className={`h-9! w-full px-3 text-zinc-900 bg-zinc-50 border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                        profileErrors.contactNumber
+                          ? "border-red-500"
+                          : "border-zinc-300"
+                      }`}
+                    />
+                    {profileErrors.contactNumber && (
+                      <p className="mt-1 text-[11px] text-red-600">
+                        {profileErrors.contactNumber.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-700 font-semibold mb-1">
+                      System Account Role
+                    </label>
+                    <input
+                      type="text"
+                      value="Customer / Wearthly Community"
+                      readOnly
+                      className="h-9! w-full px-3 text-zinc-500 bg-zinc-100 border border-zinc-200 rounded-md cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={
+                      isEditingProfile
+                        ? handleSubmitProfile(handleSaveProfile)
+                        : () => setIsEditingProfile(true)
+                    }
+                    disabled={updating}
+                    className="px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {isEditingProfile ? (updating ? "Saving..." : "Save Profile") : "Edit Profile"}
+                  </button>
+                </div>
+              </form>
+            </section>
+          </ScrollReveal>
+        )}
+
+        {/* Section 2: Registered Delivery Address - 2-Column Unboxed Settings Layout */}
+        {(currentTab === "all" || currentTab === "address") && (
+          <ScrollReveal threshold={0.08} delay={50} duration={600}>
+            <section className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-zinc-200">
+              <div className="md:col-span-4 space-y-1">
+                <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+                  Default Delivery Address
+                </h2>
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  Designated delivery address for your Wearthly orders
+                  releasing and parts fulfillment.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isEditingAddress) {
+                        setIsEditingAddress(false);
+                        setSelectedAddressId(null);
+                      } else {
+                        beginAddressEdit();
+                      }
+                    }}
+                    className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
+                  >
+                    {isEditingAddress
+                      ? "← Cancel Editing"
+                      : "Add Address"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="md:col-span-8">
+                {isEditingAddress ? (
+                  <form
+                    onSubmit={handleSubmitAddress(handleSaveAddress)}
+                    className="space-y-4 text-xs"
+                    noValidate
+                  >
+                    <div>
+                      <label className="block text-zinc-700 font-semibold mb-1">
+                        Address Label
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Home, Work, etc."
+                        {...registerAddress("label")}
+                        className="h-9! w-full px-3 text-zinc-900 bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-zinc-700 font-semibold mb-1">
+                        House / Unit #, Street
+                      </label>
+                      <input
+                        type="text"
+                        {...registerAddress("street")}
+                        className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                          addressErrors.street
+                            ? "border-red-500"
+                            : "border-zinc-300"
+                        }`}
+                      />
+                      {addressErrors.street && (
+                        <p className="mt-1 text-[11px] text-red-600">
+                          {addressErrors.street.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="sm:col-span-2">
+                        <label className="block text-zinc-700 font-semibold mb-1">
+                          City / Municipality
+                        </label>
+                        <input
+                          type="text"
+                          {...registerAddress("city")}
+                          className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                            addressErrors.city
+                              ? "border-red-500"
+                              : "border-zinc-300"
+                          }`}
+                        />
+                        {addressErrors.city && (
+                          <p className="mt-1 text-[11px] text-red-600">
+                            {addressErrors.city.message}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-zinc-700 font-semibold mb-1">
+                          Postal Code
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          {...registerAddress("postalCode")}
+                          className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                            addressErrors.postalCode
+                              ? "border-red-500"
+                              : "border-zinc-300"
+                          }`}
+                        />
+                        {addressErrors.postalCode && (
+                          <p className="mt-1 text-[11px] text-red-600">
+                            {addressErrors.postalCode.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-zinc-700 font-semibold mb-1">
+                        Barangay
+                      </label>
+                      <input
+                        type="text"
+                        {...registerAddress("barangay")}
+                        className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
+                          addressErrors.barangay
+                            ? "border-red-500"
+                            : "border-zinc-300"
+                        }`}
+                      />
+                      {addressErrors.barangay && (
+                        <p className="mt-1 text-[11px] text-red-600">
+                          {addressErrors.barangay.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="pt-2 flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingAddress(false)}
+                        className="px-3 py-1.5 rounded border border-zinc-300 text-zinc-700 font-medium hover:bg-zinc-50 cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={addressesUpdating}
+                        className="px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-medium cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {addressesUpdating ? "Saving..." : "Save Address"}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="space-y-3">
+                    {addresses.map((address) => (
+                      <div
+                        key={address._id}
+                        className="border border-zinc-200 rounded-md p-4 bg-zinc-50/50 text-xs"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-semibold text-zinc-900">
+                            {address.label || "Address"}
+                          </span>
+                          {address.isDefault && (
+                            <span className="text-[10px] text-emerald-700 font-semibold">
+                              DEFAULT
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-2 text-zinc-700">
+                          {address.street}, {address.barangay}, {address.city}{" "}
+                          {address.postalCode}
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {!address.isDefault && (
+                            <button
+                              type="button"
+                              onClick={() => handleSetDefaultAddress(address._id)}
+                              className="text-emerald-700 hover:underline cursor-pointer"
+                            >
+                              Set default
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => beginAddressEdit(address)}
+                            className="text-zinc-700 hover:underline cursor-pointer"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAddress(address._id)}
+                            className="text-red-600 hover:underline cursor-pointer"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {addresses.length === 0 && (
+                      <p className="text-xs text-zinc-500">
+                        No saved addresses yet.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+          </ScrollReveal>
+        )}
+
+      </main>
+    </div>
+  );
+};

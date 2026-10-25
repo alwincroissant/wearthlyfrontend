@@ -1,0 +1,431 @@
+/* Motion tokens: Standard pace (400ms), slide-up pattern */
+:root {
+  --dur-fast: 150ms;      /* hover, focus */
+  --dur: 400ms;           /* entrances, reveals */
+  --dur-slow: 600ms;      /* image reveals */
+  --ease: cubic-bezier(.22, .61, .36, 1);   /* decelerate, no overshoot */
+  --stagger: 80ms;        /* delay between siblings */
+  --rise: 16px;           /* travel distance for slide-up entrances */
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Smooth scroll and dynamic transitions */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hero entrance: slide up */
+.anim-rise {
+  animation: a-rise var(--dur) var(--ease) both;
+}
+
+@keyframes a-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero entrance staggered sequence */
+.anim-stagger > * {
+  animation: a-rise var(--dur) var(--ease) both;
+}
+.anim-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.anim-stagger > *:nth-child(2) { animation-delay: calc(var(--stagger) * 1); }
+.anim-stagger > *:nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+.anim-stagger > *:nth-child(4) { animation-delay: calc(var(--stagger) * 3); }
+.anim-stagger > *:nth-child(5) { animation-delay: calc(var(--stagger) * 4); }
+.anim-stagger > *:nth-child(6) { animation-delay: calc(var(--stagger) * 5); }
+
+/* Image motion: subtle settle from scale 1.03 to 1 once on load */
+.anim-settle {
+  animation: a-settle var(--dur-slow) var(--ease) both;
+}
+@keyframes a-settle {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Button & card interactive motion */
+.btn-motion {
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.btn-motion:hover,
+.btn-motion:focus-visible {
+  transform: translateY(-1px);
+}
+
+.card-motion {
+  transition: transform var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.card-motion:hover {
+  transform: translateY(-2px);
+}
+
+/* Brand logo marquee: continuous loop scrolling to left */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 28s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+    overflow-x: auto;
+  }
+}
+
+/* Observer-driven scroll animation classes */
+.fade-in-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.fade-in-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes subtleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-subtle {
+  animation: subtleFadeIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Financing timeline: steps, nodes and connector reveal once on scroll */
+.timeline {
+  position: relative;
+}
+
+.timeline__step {
+  opacity: 0;
+  transform: translateY(var(--rise));
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.timeline__node {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.timeline__connector {
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur) var(--ease);
+}
+
+.timeline.is-in .timeline__step,
+.timeline.is-in .timeline__node {
+  opacity: 1;
+  transform: none;
+}
+
+.timeline.is-in .timeline__connector {
+  transform: translateX(-50%) scaleY(1);
+}
+
+.timeline.is-in .timeline__step:nth-child(1) { transition-delay: 0ms; }
+.timeline.is-in .timeline__step:nth-child(2) { transition-delay: 120ms; }
+.timeline.is-in .timeline__step:nth-child(3) { transition-delay: 240ms; }
+
+.timeline.is-in .timeline__step:nth-child(1) .timeline__node { transition-delay: 60ms; }
+.timeline.is-in .timeline__step:nth-child(2) .timeline__node { transition-delay: 180ms; }
+.timeline.is-in .timeline__step:nth-child(3) .timeline__node { transition-delay: 300ms; }
+
+.timeline.is-in .timeline__step:nth-child(1) .timeline__connector { transition-delay: 180ms; }
+.timeline.is-in .timeline__step:nth-child(2) .timeline__connector { transition-delay: 300ms; }
+
+/* Reviews: looping spotlight. One owner quote fills the frame and
+   cross-fades to the next on a timer. Stage reveals once on scroll. */
+.reviews {
+  position: relative;
+}
+
+.reviews .reviews__stage {
+  opacity: 0;
+  transform: translateY(var(--rise));
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.reviews.is-in .reviews__stage {
+  opacity: 1;
+  transform: none;
+}
+
+.reviews__stage {
+  display: grid;
+}
+
+.reviews__slide {
+  grid-area: 1 / 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.75rem;
+  padding: 2rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 4px;
+  background: #ffffff;
+  opacity: 0;
+  transform: translateY(var(--rise));
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+
+.reviews__slide.is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.reviews__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.reviews__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: #d4d4d8;
+  cursor: pointer;
+  transition: width var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.reviews__dot:hover {
+  background: #a1a1aa;
+}
+
+.reviews__dot.is-active {
+  width: 26px;
+  background: #047857;
+}
+
+/* Homepage featured product spotlight (Motortrade-inspired presentation) */
+.home-spotlight__viewport {
+  overflow: hidden;
+  width: 100%;
+  --slide-size: 82%;
+}
+
+@media (min-width: 768px) {
+  .home-spotlight__viewport {
+    --slide-size: 33.3333%;
+  }
+}
+
+.home-spotlight__track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  will-change: transform;
+  transform: translateX(
+    calc((100% - var(--slide-size)) / 2 - var(--visual-index) * var(--slide-size))
+  );
+}
+
+.home-spotlight__track.is-animating {
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-spotlight__slide {
+  flex: 0 0 var(--slide-size);
+  max-width: var(--slide-size);
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.home-spotlight__slide-inner {
+  transform: scale(0.86);
+  opacity: 0.32;
+  filter: grayscale(18%);
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 520ms ease,
+    filter 520ms ease;
+}
+
+.home-spotlight__slide.is-active .home-spotlight__slide-inner {
+  transform: scale(1);
+  opacity: 1;
+  filter: none;
+}
+
+.home-spotlight__hero-img {
+  transition: transform 220ms ease;
+}
+
+a.group:hover .home-spotlight__hero-img {
+  transform: scale(1.03);
+}
+
+.home-spotlight__nav {
+  width: 36px;
+  height: 36px;
+  background: #18181b;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+
+.home-spotlight__nav:hover,
+.home-spotlight__nav:focus-visible {
+  background: #059669;
+  outline: none;
+}
+
+.home-spotlight__nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #18181b;
+}
+
+/* Subtle scrollbar for sticky filter aside */
+aside::-webkit-scrollbar {
+  width: 4px;
+}
+aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+aside::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 4px;
+}
+aside::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}
+
+.admin-header {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Compact labels used inside dense admin data grids. */
+.admin-table-badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 20px;
+  height: auto;
+  padding: 2px 6px;
+  border-radius: 3px;
+  line-height: 1.1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.admin-table-badge > .admin-table-badge__dot {
+  flex: 0 0 auto;
+}
+
+.MuiDataGrid-cell {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.MuiDataGrid-columnHeaderTitle {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+.MuiDataGrid-cellContent {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.3;
+  text-overflow: clip;
+}
+
+.admin-table-cell-center {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.admin-products-grid .MuiDataGrid-cellCheckbox,
+.admin-products-grid .MuiDataGrid-columnHeaderCheckbox {
+  box-sizing: border-box;
+  width: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  overflow: visible;
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: center;
+}
+
+.admin-products-grid .MuiDataGrid-cellCheckbox .MuiCheckbox-root,
+.admin-products-grid .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root {
+  flex: 0 0 auto;
+  padding: 5px;
+  margin: 0;
+}
