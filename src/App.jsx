@@ -26,7 +26,7 @@ import { AdminInventory } from "./assets/pages/admin/AdminInventory";
 import { AdminOrders } from "./assets/pages/admin/AdminOrders";
 import { AdminProducts } from "./assets/pages/admin/AdminProducts";
 import { AdminReviews } from "./assets/pages/admin/AdminReviews";
-import { AdminSettings } from "./assets/pages/admin/AdminSettings";
+import { AdminStoreSettings } from "./assets/pages/admin/AdminStoreSettings";
 import { AdminCustomers } from "./assets/pages/admin/AdminCustomers";
 import ProtectedRoute from "./assets/components/ProtectedRoute";
 import { LOGOUT_SUCCESS } from "./constants/userConstants";
@@ -166,7 +166,7 @@ function App() {
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/customers" element={<AdminCustomers />} />
-            <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/settings" element={<AdminStoreSettings />} />
           </Route>
 
           <Route path="/login" element={<Login />} />

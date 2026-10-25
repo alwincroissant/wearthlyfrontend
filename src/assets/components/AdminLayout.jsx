@@ -129,7 +129,7 @@ export const AdminLayout = ({ activeTab: propActiveTab }) => {
     {
       id: "settings",
       group: "Customer & System",
-      label: "Store Settings",
+      label: "Store Information",
       icon: (
         <svg
           className="w-4 h-4 shrink-0"
