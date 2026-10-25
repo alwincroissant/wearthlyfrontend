@@ -312,29 +312,13 @@ export const Homepage = ({ onNavigate }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/45 to-zinc-950/65" />
 
         <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-28 pb-16 sm:pt-36 sm:pb-24">
-          <div className="max-w-2xl anim-stagger">
-            <img
-              src="/wearthlylogo.ico"
-              alt="Wearthly"
-              className="h-14 w-14 sm:h-20 sm:w-20 rounded-full object-cover object-center mb-8"
-            />
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-mono tracking-[0.25em] uppercase mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              <span>Wearthly // Comfort, Reimagined.</span>
-            </div>
-
-            {/* Main Editorial Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white leading-[1.02] mb-4 font-display">
-              Find your way forward.
+          <div className="max-w-3xl mx-auto text-center anim-stagger">
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-semibold text-white leading-[0.95] mb-8 font-display text-balance">
+              Comfort, Reimagined.
             </h1>
 
-            {/* Brand Manifesto Subtitle */}
-            <p className="text-sm sm:text-base text-zinc-200 leading-relaxed mb-7 max-w-lg font-light tracking-wide">
-              Thoughtfully made clothing for workdays, campus days, quiet weekends, and every version of your everyday.
-            </p>
-
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={() => handleNavigate("shop")}
