@@ -76,7 +76,6 @@ export const Homepage = ({ onNavigate }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [carouselIndex, setCarouselIndex] = useState(0);
 
   const { cartItems = [] } = useSelector((state) => state.cart || {});
@@ -179,7 +178,7 @@ export const Homepage = ({ onNavigate }) => {
     dispatch(
       getProducts(
         1,
-        searchQuery,
+        "",
         [0, 9999999],
         "",
         "",
@@ -190,7 +189,7 @@ export const Homepage = ({ onNavigate }) => {
         true
       )
     );
-  }, [dispatch, searchQuery]);
+  }, [dispatch]);
 
   // Initial fetch for Infinite Scroll catalog
   useEffect(() => {
@@ -270,13 +269,6 @@ export const Homepage = ({ onNavigate }) => {
   }, [products]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCarouselIndex(0);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  useEffect(() => {
     if (featuredUnits.length > 0 && carouselIndex >= featuredUnits.length) {
       const timer = setTimeout(() => {
         setCarouselIndex(0);
@@ -296,15 +288,6 @@ export const Homepage = ({ onNavigate }) => {
       onNavigate(path);
     } else {
       navigate(paramString ? `/${path}?${paramString}` : `/${path}`);
-    }
-  };
-
-  const handleHeroSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      handleNavigate("shop", `keyword=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      handleNavigate("shop");
     }
   };
 
@@ -355,31 +338,6 @@ export const Homepage = ({ onNavigate }) => {
             <p className="text-sm sm:text-base text-zinc-200 leading-relaxed mb-7 max-w-lg font-light tracking-wide">
               Thoughtfully made clothing for workdays, campus days, quiet weekends, and every version of your everyday.
             </p>
-
-            {/* Quick Search Form */}
-            <form onSubmit={handleHeroSearch} className="mb-7 flex flex-col sm:flex-row items-stretch gap-2 max-w-lg">
-              <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search everyday pieces, essentials, or new arrivals..."
-                  className="!h-11 w-full pl-10 pr-3.5 text-xs sm:text-sm text-white bg-zinc-900/80 backdrop-blur-md border border-zinc-700/80 rounded placeholder:text-zinc-400 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
-                />
-              </div>
-              <button
-                type="submit"
-                className="!h-11 px-6 rounded bg-white hover:bg-zinc-200 active:bg-zinc-300 text-zinc-950 text-xs font-bold uppercase tracking-[0.16em] transition-colors cursor-pointer whitespace-nowrap btn-motion"
-              >
-                Search
-              </button>
-            </form>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

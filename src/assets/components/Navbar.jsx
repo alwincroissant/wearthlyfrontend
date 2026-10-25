@@ -202,52 +202,52 @@ export const Navbar = ({ currentPage }) => {
           </nav>
         </div>
 
-        <form
-          onSubmit={handleSearch}
-          className={`hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center w-56 xl:w-72 h-9 rounded-full border transition-colors ${
-            overDark
-              ? "border-white/25 bg-white/10 text-white focus-within:border-white/60 focus-within:bg-white/15"
-              : "border-zinc-200 bg-white text-zinc-700 shadow-sm focus-within:border-emerald-500"
-          }`}
-          role="search"
-        >
-          <svg
-            className={`ml-3.5 h-4 w-4 shrink-0 ${overDark ? "text-white/70" : "text-zinc-400"}`}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-4-4" />
-          </svg>
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search Wearthly"
-            aria-label="Search Wearthly products"
-            className={`min-w-0 flex-1 bg-transparent px-2.5 text-xs outline-none placeholder:transition-colors ${
-              overDark
-                ? "text-white placeholder:text-white/60"
-                : "text-zinc-900 placeholder:text-zinc-400"
-            }`}
-          />
-          <button
-            type="submit"
-            className={`mr-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors ${
-              overDark
-                ? "bg-white/15 text-white hover:bg-white/25"
-                : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
-            }`}
-          >
-            Search
-          </button>
-        </form>
-
         {/* Right Section: Cart Button & User Account Menu */}
         <div className="flex items-center gap-2.5">
+          <form
+            onSubmit={handleSearch}
+            className={`hidden lg:flex items-center w-48 xl:w-60 h-9 rounded-full border transition-colors ${
+              overDark
+                ? "border-white/25 bg-white/10 text-white focus-within:border-white/60 focus-within:bg-white/15"
+                : "border-zinc-200 bg-white text-zinc-700 shadow-sm focus-within:border-emerald-500"
+            }`}
+            role="search"
+          >
+            <svg
+              className={`ml-3.5 h-4 w-4 shrink-0 ${overDark ? "text-white/70" : "text-zinc-400"}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-4-4" />
+            </svg>
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search Wearthly"
+              aria-label="Search Wearthly products"
+              className={`min-w-0 flex-1 bg-transparent px-2.5 text-xs outline-none placeholder:transition-colors ${
+                overDark
+                  ? "text-white placeholder:text-white/60"
+                  : "text-zinc-900 placeholder:text-zinc-400"
+              }`}
+            />
+            <button
+              type="submit"
+              className={`mr-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                overDark
+                  ? "bg-white/15 text-white hover:bg-white/25"
+                  : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+              }`}
+            >
+              Search
+            </button>
+          </form>
+
           {/* Cart Nav Button */}
           <Link
             to="/cart"
