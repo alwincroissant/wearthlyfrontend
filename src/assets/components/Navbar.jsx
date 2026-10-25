@@ -142,12 +142,12 @@ export const Navbar = ({ currentPage }) => {
       ref={headerRef}
       className={`sticky top-0 z-30 border-b transition-colors duration-300 ${headerTone}`}
     >
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-3">
         {/* Brand & Main Navigation */}
-        <div className="flex items-center gap-6">
+        <div className="flex min-w-0 items-center gap-4 lg:gap-6">
           <Link
             to="/"
-            className="flex items-center gap-2.5 cursor-pointer focus:outline-none group"
+            className="flex shrink-0 items-center gap-2.5 cursor-pointer focus:outline-none group"
           >
             <img
               src="/wearthlylogo.ico"
@@ -155,7 +155,7 @@ export const Navbar = ({ currentPage }) => {
               className="h-8 w-8 rounded-full object-cover transition-transform duration-150 group-hover:scale-105"
             />
             <span
-              className={`text-sm font-bold tracking-wider uppercase ${
+              className={`whitespace-nowrap text-sm font-bold tracking-wider uppercase ${
                 overDark ? "text-white" : "text-zinc-900"
               }`}
             >
@@ -164,7 +164,7 @@ export const Navbar = ({ currentPage }) => {
           </Link>
 
           {/* Navigation Links (Profile moved to user dropdown as requested) */}
-          <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
+          <nav className="hidden lg:flex items-center gap-1 text-xs font-medium">
             <Link
               to="/"
               className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
@@ -201,10 +201,10 @@ export const Navbar = ({ currentPage }) => {
         </div>
 
         {/* Right Section: Cart Button & User Account Menu */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
           <form
             onSubmit={handleSearch}
-            className={`flex items-center w-28 sm:w-40 lg:w-48 xl:w-60 h-9 rounded-full border transition-colors ${
+            className={`flex shrink-0 items-center w-24 max-[400px]:w-20 sm:w-40 lg:w-48 xl:w-60 h-9 rounded-full border transition-colors ${
               overDark
                 ? "border-white/25 bg-white/10 text-white focus-within:border-white/60 focus-within:bg-white/15"
                 : "border-zinc-200 bg-white text-zinc-700 shadow-sm focus-within:border-emerald-500"
@@ -236,7 +236,7 @@ export const Navbar = ({ currentPage }) => {
             />
             <button
               type="submit"
-              className={`mr-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+              className={`mr-1 rounded-full px-1.5 sm:px-2.5 py-1 text-[10px] font-semibold transition-colors ${
                 overDark
                   ? "bg-white/15 text-white hover:bg-white/25"
                   : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
