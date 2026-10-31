@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getProfilePictureUrl } from "../../utils/profilePicture";
 
 export const AdminLayout = ({ activeTab: propActiveTab }) => {
   const { user } = useSelector((state) => state.auth);
@@ -316,7 +317,7 @@ export const AdminLayout = ({ activeTab: propActiveTab }) => {
             <div className="relative shrink-0">
               {user?.profilePicture ? (
                 <img
-                  src={user.profilePicture}
+                  src={getProfilePictureUrl(user.profilePicture)}
                   alt="avatar"
                   className="w-7 h-7 rounded-full object-cover shadow-sm"
                 />

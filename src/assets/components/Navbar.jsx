@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/userActions";
+import { getProfilePictureUrl } from "../../utils/profilePicture";
 
 export const Navbar = ({ currentPage }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -321,7 +322,7 @@ export const Navbar = ({ currentPage }) => {
                   >
                     {user.profilePicture ? (
                       <img
-                        src={user.profilePicture}
+                        src={getProfilePictureUrl(user.profilePicture)}
                         alt={displayName}
                         className="w-full h-full object-cover"
                       />
@@ -390,7 +391,7 @@ export const Navbar = ({ currentPage }) => {
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-900 text-xs font-bold text-white ring-2 ring-emerald-200/70">
                         {user.profilePicture ? (
                           <img
-                            src={user.profilePicture}
+                            src={getProfilePictureUrl(user.profilePicture)}
                             alt={displayName}
                             className="h-full w-full object-cover"
                           />

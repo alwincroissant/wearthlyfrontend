@@ -5,6 +5,7 @@ import { ScrollReveal } from "../../components/ScrollReveal";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { getProfilePictureUrl } from "../../../utils/profilePicture";
 import {
   profileAddressSchema,
   profileInfoSchema,
@@ -38,7 +39,9 @@ export const Profile = ({ activeTab = "all" }) => {
   const persistedProfilePhoto =
     profile?.profilePicture || user?.profilePicture || null;
   const displayedProfilePhoto =
-    profilePhotoUrl === "" ? null : profilePhotoUrl || persistedProfilePhoto;
+    profilePhotoUrl === ""
+      ? null
+      : getProfilePictureUrl(profilePhotoUrl || persistedProfilePhoto);
 
   const {
     register: registerProfile,

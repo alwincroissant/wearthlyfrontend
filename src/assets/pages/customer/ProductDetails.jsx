@@ -5,6 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getProductDetails, clearErrors } from "../../../actions/productActions";
 import { addToCart } from "../../../actions/cartActions";
+import { getProfilePictureUrl } from "../../../utils/profilePicture";
 import {
   getProductReviews,
   getMyReview,
@@ -923,7 +924,7 @@ export const ProductDetails = () => {
                       <li key={r._id} className="py-5 flex gap-3">
                         {r.user?.profilePicture ? (
                           <img
-                            src={r.user.profilePicture}
+                            src={getProfilePictureUrl(r.user.profilePicture)}
                             alt={author}
                             className="w-9 h-9 rounded-full object-cover border border-zinc-200 shrink-0"
                           />
