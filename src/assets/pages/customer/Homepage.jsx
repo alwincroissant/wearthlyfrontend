@@ -331,12 +331,12 @@ export const Homepage = ({ onNavigate }) => {
                 </svg>
               </button>
 
-              <a
-                href="#lookbook"
+              <Link
+                to="/about"
                 className="h-11 px-6 rounded bg-transparent hover:bg-white/10 active:bg-white/20 border border-white/30 hover:border-white text-white text-xs font-semibold uppercase tracking-[0.18em] transition-colors cursor-pointer flex items-center justify-center gap-2 btn-motion"
               >
-                <span>See the Wearthly edit</span>
-              </a>
+                <span>See the Wearthly Story</span>
+              </Link>
             </div>
           </div>
         </div>

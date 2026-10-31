@@ -104,9 +104,6 @@ export const About = () => {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-3xl space-y-4">
-            <span className="text-xs uppercase tracking-[0.28em] font-bold text-emerald-400">
-              Comfort, Reimagined.
-            </span>
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight uppercase leading-[1.05]">
               About Wearthly
             </h1>
@@ -118,7 +115,6 @@ export const About = () => {
               <span>•</span>
               <span>Mindful Material Choices</span>
               <span>•</span>
-              <span>Comfort, Reimagined.</span>
             </div>
           </div>
         </div>
@@ -136,7 +132,7 @@ export const About = () => {
           <div className="space-y-1 sm:border-l sm:border-zinc-800 sm:pl-6">
             <p className="text-sm font-bold text-white tracking-wide">Made for Real Life</p>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Designed for office teams, corporate life, schools, NGOs, and communities across the Philippines.
+              Designed for office teams, corporate life, schools, and communities across the Philippines.
             </p>
           </div>
           <div className="space-y-1 sm:border-l sm:border-zinc-800 sm:pl-6">
@@ -157,16 +153,13 @@ export const About = () => {
                 Design Philosophy
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900">
-                Comfort, Reimagined.
+                Thoughtful by Design
               </h2>
               <p className="text-sm text-zinc-600 leading-relaxed">
                 Welcome to WEARTHLY. We believe style should be more than what
                 you wear; it should also reflect choices that are kinder to our
                 planet. Our collection is stylish, comfortable, and thoughtfully
                 made for your everyday vibe.
-              </p>
-              <p className="text-sm text-zinc-600 leading-relaxed">
-                Each silhouette is crafted through extensive pattern drafting, bespoke fabric dyeing, and meticulous fitting trials—resulting in clothing that moves fluidly between street and formal space.
               </p>
             </div>
 
@@ -273,7 +266,7 @@ export const About = () => {
             <div className="divide-y divide-zinc-200 border-y border-zinc-200">
               {filteredFaqs.length === 0 ? (
                 <div className="py-12 text-center text-xs text-zinc-500">
-                  No questions match your query. Reach our studio desk at support@wearthly.ph.
+                  No questions match your query. Reach our studio desk at wearthlycustomerservice@gmail.com.
                 </div>
               ) : (
                 filteredFaqs.map((faq) => {
@@ -351,7 +344,7 @@ export const About = () => {
               <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">Location</p>
               <p className="text-sm font-bold text-white">Studio Showroom &amp; Archive</p>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Philippines • Customer support and community inquiries
+                #40 Guyabano St. Brgy. Katuparan, Taguig City
               </p>
             </div>
             <div className="space-y-1.5">
@@ -365,9 +358,9 @@ export const About = () => {
               <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">Direct Inquiries</p>
               <p className="text-sm font-bold text-white">Client Care &amp; Press</p>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                support@wearthly.ph
+                wearthlycustomerservice@gmail.com
                 <br />
-                hello@wearthly.ph
+                wearthlyclothingsph@gmail.com
               </p>
             </div>
           </div>

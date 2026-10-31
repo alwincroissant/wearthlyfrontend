@@ -51,12 +51,12 @@ export const Footer = () => {
             <div className="pt-2 space-y-1.5 text-zinc-500 text-[11px]">
               <p className="flex items-center gap-2">
                 <span className="font-semibold text-zinc-800">Studio & Flagship:</span>
-                <span className="text-zinc-600">Philippines</span>
+                <span className="text-zinc-600">#40 Guyabano St. Brgy. Katuparan, Taguig City</span>
               </p>
               <p className="flex items-center gap-2">
                 <span className="font-semibold text-zinc-800">Concierge:</span>
-                <a href="mailto:support@wearthly.ph" className="hover:text-zinc-950 transition-colors">
-                  support@wearthly.ph
+                <a href="mailto:wearthlycustomerservice@gmail.com" className="hover:text-zinc-950 transition-colors">
+                  wearthlycustomerservice@gmail.com
                 </a>
               </p>
               <p className="flex items-center gap-2">

@@ -172,6 +172,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<DashboardRedirect />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <ToastContainer
           position="bottom-right"

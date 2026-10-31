@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const SUPPORT_EMAIL = "support@wearthly.ph";
+const SUPPORT_EMAIL = "wearthlycustomerservice@gmail.com";
 const HOTLINE_DISPLAY = "(02) 8921-5500";
 const HOTLINE_HREF = "tel:+63289215500";
 
