@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Wearthly profile avatar">
+  <rect width="128" height="128" rx="64" fill="#047857"/>
+  <circle cx="64" cy="48" r="22" fill="#ecfdf5"/>
+  <path d="M25 108c4-22 19-34 39-34s35 12 39 34" fill="#ecfdf5"/>
+</svg>
