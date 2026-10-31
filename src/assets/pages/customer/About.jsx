@@ -115,6 +115,7 @@ export const About = () => {
               <span>•</span>
               <span>Mindful Material Choices</span>
               <span>•</span>
+              <span>Comfort, Reimagined.</span>
             </div>
           </div>
         </div>

@@ -370,7 +370,7 @@ export const AdminLayout = ({ activeTab: propActiveTab }) => {
             {/* Breadcrumb Info */}
             <div className="flex items-center gap-2 text-xs">
               <span className="font-semibold text-zinc-400 uppercase tracking-wider text-[11px]">
-                Dealership
+                Wearthly Store
               </span>
               <span className="text-zinc-300">/</span>
               <span className="font-bold text-zinc-900 capitalize">
@@ -409,7 +409,7 @@ export const AdminLayout = ({ activeTab: propActiveTab }) => {
                 <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-zinc-200 rounded-lg shadow-lg z-50 p-2 text-xs animate-fadeIn">
                   <div className="flex items-center justify-between pb-2 mb-2 border-b border-zinc-100 px-2">
                     <span className="font-bold text-zinc-900 text-xs">
-                      Dealership Alerts
+                      Store Alerts
                     </span>
                     <span className="text-[10px] text-zinc-500">
                       Mailtrap & In-App Log

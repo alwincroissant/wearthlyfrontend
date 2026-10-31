@@ -213,7 +213,7 @@ export const Profile = ({ activeTab = "all" }) => {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            {/* Sub-tab Switcher: Profile vs Address vs Verification */}
+            {/* Sub-tab Switcher: Profile vs Address */}
             <div className="flex items-center gap-1 border border-zinc-200 p-0.5 rounded-lg bg-zinc-50 text-xs font-medium max-w-full overflow-x-auto">
               <Link
                 to="/profile"
@@ -244,16 +244,6 @@ export const Profile = ({ activeTab = "all" }) => {
                 }`}
               >
                 Delivery Addresses
-              </Link>
-              <Link
-                to="/profile/verification"
-                className={`px-3 py-1.5 rounded-md whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
-                  currentTab === "verification"
-                    ? "bg-white text-zinc-900 font-semibold shadow-2xs"
-                    : "text-zinc-500 hover:text-zinc-900"
-                }`}
-              >
-                Credit Verification
               </Link>
             </div>
           </div>

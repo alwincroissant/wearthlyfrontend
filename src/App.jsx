@@ -112,10 +112,6 @@ function App() {
               path="/profile/address"
               element={<Profile activeTab="address" />}
             />
-            <Route
-              path="/profile/verification"
-              element={<Profile activeTab="verification" />}
-            />
             <Route path="/shop" element={<Shop />} />
             <Route path="/about" element={<About />} />
             <Route path="/product/:id" element={<ProductDetails />} />

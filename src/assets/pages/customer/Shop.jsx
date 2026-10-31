@@ -28,7 +28,7 @@ export const Shop = ({ onNavigate }) => {
   const initialKeyword = searchParams.get("keyword") || searchParams.get("search") || "";
   const initialPage = Number(searchParams.get("page")) || 1;
   const initialMinPrice = Number(searchParams.get("minPrice")) || 0;
-  const initialMaxPrice = Number(searchParams.get("maxPrice")) || 350000;
+  const initialMaxPrice = Number(searchParams.get("maxPrice")) || 5000;
   const initialRating = Number(searchParams.get("ratings")) || 0;
   const initialOnlyReviewed = searchParams.get("hasReviews") === "true";
 
@@ -37,7 +37,6 @@ export const Shop = ({ onNavigate }) => {
   const [onlyReviewed, setOnlyReviewed] = useState(initialOnlyReviewed);
   const [searchQuery, setSearchQuery] = useState(initialKeyword);
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [viewMode, setViewMode] = useState("grid"); // "grid" or "table"
 
   // Infinite Scroll State
   const [infiniteProducts, setInfiniteProducts] = useState([]);
@@ -130,7 +129,7 @@ export const Shop = ({ onNavigate }) => {
     if (searchQuery.trim()) params.set("keyword", searchQuery.trim());
     if (onlyReviewed) params.set("hasReviews", "true");
     if (priceRange[0] > 0) params.set("minPrice", String(priceRange[0]));
-    if (priceRange[1] < 350000) params.set("maxPrice", String(priceRange[1]));
+    if (priceRange[1] < 5000) params.set("maxPrice", String(priceRange[1]));
     if (selectedRating > 0) params.set("ratings", String(selectedRating));
     if (currentPage > 1) params.set("page", String(currentPage));
     setSearchParams(params, { replace: true });
@@ -173,7 +172,7 @@ export const Shop = ({ onNavigate }) => {
   };
 
   const handleResetFilters = () => {
-    setPriceRange([0, 350000]);
+    setPriceRange([0, 5000]);
     setSelectedRating(0);
     setOnlyReviewed(false);
     setSearchQuery("");
@@ -248,11 +247,11 @@ export const Shop = ({ onNavigate }) => {
                 <label className="block text-xs font-bold text-zinc-900 uppercase tracking-wider">
                   Price Range (PHP)
                 </label>
-                {(priceRange[0] > 0 || priceRange[1] < 350000) && (
+                {(priceRange[0] > 0 || priceRange[1] < 5000) && (
                   <button
                     type="button"
                     onClick={() => {
-                      setPriceRange([0, 350000]);
+                      setPriceRange([0, 5000]);
                       setCurrentPage(1);
                     }}
                     className="text-[11px] text-zinc-500 hover:text-zinc-900 underline cursor-pointer"
@@ -270,8 +269,8 @@ export const Shop = ({ onNavigate }) => {
                   }}
                   valueLabelDisplay="auto"
                   min={0}
-                  max={350000}
-                  step={5000}
+                  max={5000}
+                  step={100}
                   valueLabelFormat={(val) => `₱${val.toLocaleString()}`}
                   sx={{
                     color: "#059669", // emerald-600
@@ -387,7 +386,7 @@ export const Shop = ({ onNavigate }) => {
             {/* Reset All Filters */}
             {(
               priceRange[0] > 0 ||
-              priceRange[1] < 350000 ||
+              priceRange[1] < 5000 ||
               selectedRating > 0 ||
               searchQuery) && (
               <div className="pt-2">
@@ -425,31 +424,7 @@ export const Shop = ({ onNavigate }) => {
                   <strong>{filteredProductsCount || productsCount || 0}</strong> items in database
                 </span>
 
-                {/* View Switcher: Table or Grid */}
-                <div className="flex items-center gap-1 border border-zinc-200 rounded p-0.5 bg-zinc-50">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("grid")}
-                    className={`px-2 py-1 rounded text-xs cursor-pointer ${
-                      viewMode === "grid"
-                        ? "bg-white text-zinc-900 font-semibold shadow-2xs"
-                        : "text-zinc-500 hover:text-zinc-900"
-                    }`}
-                  >
-                    Directory Grid
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("table")}
-                    className={`px-2 py-1 rounded text-xs cursor-pointer ${
-                      viewMode === "table"
-                        ? "bg-white text-zinc-900 font-semibold shadow-2xs"
-                        : "text-zinc-500 hover:text-zinc-900"
-                    }`}
-                  >
-                    Inventory Table
-                  </button>
-                </div>
+                <span className="text-zinc-500">Directory Grid</span>
               </div>
 
               {/* Loading Skeleton */}
@@ -522,8 +497,7 @@ export const Shop = ({ onNavigate }) => {
                     </Box>
                   }
                 >
-                  {viewMode === "grid" ? (
-                    /* Architectural Grid - Real Cloudinary images + database attributes */
+                  {/* Architectural Grid - Real Cloudinary images + database attributes */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-zinc-200">
                       {infiniteProducts.map((p) => {
                     const hasImage = p.images && p.images.length > 0 && p.images[0]?.url;
@@ -576,23 +550,6 @@ export const Shop = ({ onNavigate }) => {
                               {p.name}
                             </Link>
 
-                            {/* MUI Rating display (5pts deliverable) */}
-                            <div className="flex items-center gap-1.5 pt-0.5">
-                              <Rating
-                                value={Number(p.ratings) || 0}
-                                precision={0.1}
-                                readOnly
-                                size="small"
-                                sx={{ fontSize: "0.85rem" }}
-                              />
-                              <span className="text-[11px] font-semibold text-zinc-700">
-                                {p.ratings ? Number(p.ratings).toFixed(1) : "0.0"}
-                              </span>
-                              <span className="text-[10px] text-zinc-400">
-                                ({p.numOfReviews || 0})
-                              </span>
-                            </div>
-
                             {p.compatibleModels && p.compatibleModels.length > 0 && (
                               <p className="text-[11px] text-zinc-500 line-clamp-1 font-medium">
                                 Compatible: {p.compatibleModels.join(", ")}
@@ -604,6 +561,26 @@ export const Shop = ({ onNavigate }) => {
                                 {p.description}
                               </p>
                             )}
+
+                            <div className="flex items-center gap-1.5 pt-0.5">
+                              <Rating
+                                value={Number(p.numOfReviews) > 0 ? Number(p.ratings) || 0 : 0}
+                                precision={0.1}
+                                readOnly
+                                size="small"
+                                sx={{ fontSize: "0.85rem" }}
+                                aria-label={
+                                  Number(p.numOfReviews) > 0
+                                    ? `${Number(p.ratings).toFixed(1)} out of 5 stars`
+                                    : "No reviews yet"
+                                }
+                              />
+                              <span className="text-[11px] text-zinc-500">
+                                {Number(p.numOfReviews) > 0
+                                  ? `${Number(p.ratings).toFixed(1)} (${p.numOfReviews})`
+                                  : "No reviews yet"}
+                              </span>
+                            </div>
                           </div>
 
                           <div className="pt-2 border-t border-zinc-100 space-y-2">
@@ -632,105 +609,6 @@ export const Shop = ({ onNavigate }) => {
                     );
                   })}
                 </div>
-              ) : (
-                /* Table Directory View - Data dense, structured dealership inventory */
-                <div className="border border-zinc-200 rounded-md overflow-hidden bg-white">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse">
-                      <thead>
-                        <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-600 uppercase tracking-wider text-[11px] font-semibold">
-                          <th className="py-3 px-3.5">Product</th>
-                          <th className="py-3 px-3.5 hidden lg:table-cell">
-                            Compatibility
-                          </th>
-                          <th className="py-3 px-3.5 text-center">Stock</th>
-                          <th className="py-3 px-3.5 font-semibold">Price (PHP)</th>
-                          <th className="py-3 px-3.5 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-zinc-200">
-                        {infiniteProducts.map((p) => {
-                          const hasImage = p.images && p.images.length > 0 && p.images[0]?.url;
-
-                          return (
-                            <tr
-                              key={p._id}
-                              className="hover:bg-zinc-50/70 transition-colors"
-                            >
-                              <td className="py-3 px-3.5">
-                                <div className="flex items-center gap-3">
-                                  <Link
-                                    to={`/product/${p._id}`}
-                                    className="w-10 h-10 shrink-0 rounded bg-zinc-100 border border-zinc-200 overflow-hidden flex items-center justify-center hover:opacity-80 transition-opacity"
-                                  >
-                                    {hasImage ? (
-                                      <img
-                                        src={p.images[0].url}
-                                        alt={p.name}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    ) : (
-                                      <ProductImagePlaceholder name={p.name} compact />
-                                    )}
-                                  </Link>
-                                  <div>
-                                    <Link
-                                      to={`/product/${p._id}`}
-                                      className="font-semibold text-zinc-900 block hover:text-emerald-700 hover:underline transition-colors"
-                                    >
-                                      {p.name}
-                                    </Link>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-3.5 hidden lg:table-cell text-zinc-500 text-[11px]">
-                                {p.compatibleModels?.length > 0
-                                  ? p.compatibleModels.join(", ")
-                                  : "Universal Fit"}
-                              </td>
-                              <td className="py-3 px-3.5 text-center whitespace-nowrap">
-                                <span
-                                  className={`px-1.5 py-0.5 rounded text-[10px] font-medium border ${
-                                    p.stock === 0
-                                      ? "bg-red-50 text-red-800 border-red-200"
-                                      : p.stock <= 3
-                                      ? "bg-amber-50 text-amber-800 border-amber-200"
-                                      : "bg-zinc-100 text-zinc-700 border-zinc-200"
-                                  }`}
-                                >
-                                  {p.stock === 0 ? "Out of stock" : `${p.stock} units`}
-                                </span>
-                              </td>
-                              <td className="py-3 px-3.5 font-price font-bold text-zinc-900 whitespace-nowrap">
-                                ₱
-                                {Number(p.price).toLocaleString("en-US", {
-                                  minimumFractionDigits: 2,
-                                })}
-                              </td>
-                              <td className="py-3 px-3.5 text-right whitespace-nowrap space-x-1.5">
-                                <Link
-                                  to={`/product/${p._id}`}
-                                  className="inline-block h-7 leading-7 px-2.5 rounded border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs font-medium cursor-pointer transition-colors"
-                                >
-                                  View
-                                </Link>
-                                <button
-                                  type="button"
-                                  disabled={p.stock === 0}
-                                  onClick={() => handleAddToCart(p)}
-                                  className="h-7 px-3 rounded bg-emerald-600 hover:bg-emerald-700 disabled:bg-zinc-200 disabled:text-zinc-400 disabled:cursor-not-allowed text-white text-xs font-medium cursor-pointer transition-colors"
-                                >
-                                  Add
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                  )}
                 </InfiniteScroll>
               )}
             </ScrollReveal>

@@ -279,7 +279,7 @@ export const Navbar = ({ currentPage }) => {
             )}
           </Link>
 
-          {/* Dealership Operations Quick Access (Admins Only) */}
+          {/* Store Management Quick Access (Admins Only) */}
           {isAuthenticated && user?.role === "admin" && (
             <Link
               to="/admin/dashboard"
@@ -436,16 +436,6 @@ export const Navbar = ({ currentPage }) => {
                           </>
                         ),
                       },
-                      {
-                        tab: "verification",
-                        label: "Credit verification",
-                        icon: (
-                          <>
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            <path d="M9 12l2 2 4-4" />
-                          </>
-                        ),
-                      },
                     ].map((item) => {
                       const isActive = profileTab === item.tab;
                       return (
@@ -515,7 +505,7 @@ export const Navbar = ({ currentPage }) => {
                               <rect x="3" y="14" width="7" height="7" />
                             </svg>
                           </span>
-                          <span className="flex-1">Dealership operations</span>
+                          <span className="flex-1">Store management</span>
                           <svg
                             className="h-4 w-4 shrink-0 text-emerald-600/70 group-hover:text-emerald-700"
                             viewBox="0 0 24 24"

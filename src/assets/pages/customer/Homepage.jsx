@@ -33,39 +33,6 @@ const brandStorySteps = [
   },
 ];
 
-const testimonials = [
-  {
-    author: "Sofia Ramos",
-    role: "Creative Director",
-    location: "Makati City",
-    initials: "SR",
-    verifiedTag: "Verified Buyer • Everyday Essential",
-    acquiredDate: "Ordered Sep 2026",
-    quote:
-      "The pieces feel comfortable without looking ordinary. Wearthly has become my go-to for workdays and weekends.",
-  },
-  {
-    author: "Carlos Mendoza",
-    role: "Architect & Stylist",
-    location: "BGC, Taguig",
-    initials: "CM",
-    verifiedTag: "Verified Buyer • Soft Structure Shirt",
-    acquiredDate: "Ordered Aug 2026",
-    quote:
-      "Everything feels considered, from the fabric to the fit. It is easy to dress well and still feel like myself.",
-  },
-  {
-    author: "Beatrice Bautista",
-    role: "Digital Curator",
-    location: "Cebu City",
-    initials: "BB",
-    verifiedTag: "Verified Buyer • Earthbound Layer",
-    acquiredDate: "Ordered Oct 2026",
-    quote:
-      "The quality is lovely and the design is timeless. These are clothes I can keep reaching for.",
-  },
-];
-
 export const Homepage = ({ onNavigate }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -110,57 +77,6 @@ export const Homepage = ({ onNavigate }) => {
     io.observe(node);
     return () => io.disconnect();
   }, []);
-
-  // Reviews reveal
-  const reviewsRef = useRef(null);
-  const [reviewsIn, setReviewsIn] = useState(
-    () => typeof window === "undefined" || !("IntersectionObserver" in window)
-  );
-
-  useEffect(() => {
-    const node = reviewsRef.current;
-    if (
-      !node ||
-      typeof window === "undefined" ||
-      !("IntersectionObserver" in window)
-    ) {
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setReviewsIn(true);
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-    io.observe(node);
-    return () => io.disconnect();
-  }, []);
-
-  // Reviews spotlight auto-cycle
-  const [reviewIndex, setReviewIndex] = useState(0);
-  const [reviewPaused, setReviewPaused] = useState(false);
-
-  useEffect(() => {
-    if (!reviewsIn || reviewPaused || testimonials.length <= 1) {
-      return;
-    }
-    if (
-      typeof window === "undefined" ||
-      !window.matchMedia ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-    const id = setInterval(() => {
-      setReviewIndex((i) => (i + 1) % testimonials.length);
-    }, 5500);
-    return () => clearInterval(id);
-  }, [reviewsIn, reviewPaused]);
 
   // Live products via Redux
   const { loading, products = [] } = useSelector(
@@ -304,7 +220,7 @@ export const Homepage = ({ onNavigate }) => {
             aria-label="Wearthly fashion campaign"
             className="w-full h-full object-cover object-center select-none pointer-events-none"
           >
-            <source src="/samplevideofrontpage.mp4" type="video/mp4" />
+            <source src="/mainrecordinghomepage.mp4" type="video/mp4" />
           </video>
         </div>
 
@@ -699,139 +615,6 @@ export const Homepage = ({ onNavigate }) => {
           </div>
         </section>
       </ScrollReveal>
-
-      {/* 8. VERIFIED CUSTOMER REVIEWS */}
-      <ScrollReveal threshold={0.08} duration={650}>
-        <section className="w-full bg-white py-16 sm:py-20 border-b border-zinc-200">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
-            <div className="pb-3 border-b border-zinc-900">
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-emerald-800 font-bold block mb-1">
-                Client Voices
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-zinc-900 font-display">
-                Community Experiences
-              </h2>
-            </div>
-
-            <div
-              ref={reviewsRef}
-              className={`reviews ${reviewsIn ? "is-in" : ""}`}
-              onMouseEnter={() => setReviewPaused(true)}
-              onMouseLeave={() => setReviewPaused(false)}
-              onFocus={() => setReviewPaused(true)}
-              onBlur={() => setReviewPaused(false)}
-            >
-              <div className="reviews__stage">
-                {testimonials.map((t, idx) => (
-                  <figure
-                    key={idx}
-                    className={`reviews__slide ${
-                      idx === reviewIndex ? "is-active" : ""
-                    }`}
-                    aria-hidden={idx !== reviewIndex}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none select-none absolute top-4 right-6 text-7xl leading-none font-serif text-zinc-200"
-                    >
-                      &rdquo;
-                    </span>
-
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <div className="flex items-center gap-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <svg key={i} className="w-3.5 h-3.5 text-amber-500 fill-amber-500" viewBox="0 0 24 24">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                          </svg>
-                        ))}
-                      </div>
-                      <span className="inline-block text-[10px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                        {t.verifiedTag}
-                      </span>
-                    </div>
-
-                    <blockquote className="text-base sm:text-xl text-zinc-800 leading-relaxed font-light">
-                      &ldquo;{t.quote}&rdquo;
-                    </blockquote>
-
-                    <figcaption className="flex items-center justify-between gap-3 pt-2">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-full bg-zinc-950 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                          {t.initials}
-                        </div>
-                        <div className="overflow-hidden">
-                          <p className="text-sm font-bold text-zinc-900 truncate">
-                            {t.author}
-                          </p>
-                          <p className="text-xs text-zinc-500 truncate">
-                            {t.role}, {t.location}
-                          </p>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-mono text-zinc-400 shrink-0 hidden sm:inline">
-                        {t.acquiredDate}
-                      </span>
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-
-              <div className="reviews__dots">
-                {testimonials.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    aria-label={`Show review ${idx + 1}`}
-                    aria-current={idx === reviewIndex}
-                    className={`reviews__dot ${
-                      idx === reviewIndex ? "is-active" : ""
-                    }`}
-                    onClick={() => setReviewIndex(idx)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* 9. NEWSLETTER / JOIN THE WEARTHLY LIST */}
-      <section className="w-full bg-[#111111] text-white py-16 sm:py-20 border-b border-zinc-800">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center space-y-4">
-          <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-emerald-400 font-bold block">
-            Exclusive Access
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white font-display">
-            Join the Wearthly list
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-md mx-auto">
-            Receive private drop notifications, exclusive lookbook invitations, and 10% off your initial capsule order.
-          </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              toast.success("Welcome to Wearthly. We will keep you posted on new arrivals.");
-            }}
-            className="pt-2 flex flex-col sm:flex-row items-center gap-2 max-w-md mx-auto"
-          >
-            <input
-              type="email"
-              required
-              placeholder="Enter your email address"
-              className="w-full h-11 px-4 rounded bg-zinc-900 border border-zinc-700 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-white transition-colors"
-            />
-            <button
-              type="submit"
-              className="w-full sm:w-auto h-11 px-6 rounded bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs uppercase tracking-wider cursor-pointer whitespace-nowrap transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
-          <span className="block text-[10px] text-zinc-500 pt-1 font-mono">
-            Unsubscribe anytime. We respect your privacy.
-          </span>
-        </div>
-      </section>
 
     </div>
   );

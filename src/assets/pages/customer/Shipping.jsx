@@ -20,25 +20,11 @@ import { toast } from "react-toastify";
 
 const BRANCHES = [
   {
-    id: "pasig",
-    name: "Pasig City — Central Dealership",
-    address: "Eulogio Amang Rodriguez Ave, Rosario, Pasig City, Metro Manila",
-    hours: "Mon-Sat 8:30 AM – 6:00 PM, Sun 9:00 AM – 4:00 PM",
-    phone: "(02) 8642-9901 / 0917-882-3490",
-  },
-  {
-    id: "qc",
-    name: "Quezon City — North Boulevard Showroom",
-    address: "North EDSA cor. Mindanao Ave, Project 7, Quezon City",
-    hours: "Mon-Sat 9:00 AM – 6:30 PM",
-    phone: "(02) 8928-4412 / 0918-902-1145",
-  },
-  {
-    id: "cebu",
-    name: "Cebu City — Visayas Releasing Depot",
-    address: "Subangdaku National Highway, Mandaue City, Metro Cebu",
-    hours: "Mon-Sat 8:30 AM – 5:30 PM",
-    phone: "(032) 346-8800 / 0920-911-7723",
+    id: "wearthly-studio",
+    name: "Wearthly Studio",
+    address: "#40 Guyabano St. Brgy. Katuparan, Taguig City",
+    hours: "Monday to Saturday, 9:00 AM – 6:00 PM PHT",
+    phone: "wearthlycustomerservice@gmail.com",
   },
 ];
 
