@@ -20,13 +20,6 @@ const CLIENT_CARE_LINKS = [
 const LINK_CLASS =
   "hover:text-zinc-950 transition-colors text-left cursor-pointer text-xs";
 
-const SOCIAL_LINKS = [
-  ["Instagram", "https://instagram.com/wearthly.ph", "M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Z"],
-  ["Facebook", "https://facebook.com/wearthly", "M13.5 22v-8h2.75l.5-3h-3.25V9.05c0-.87.29-1.55 1.6-1.55h1.7V4.82c-.3-.04-1.33-.13-2.53-.13-2.5 0-4.22 1.53-4.22 4.34V11H7.2v3h2.85v8h3.45Z"],
-  ["TikTok", "https://tiktok.com/@wearthly.ph", "M14.4 2h3.05c.2 1.7 1.15 3.08 2.8 3.65v3.08a8.6 8.6 0 0 1-2.78-.9v6.2A5.97 5.97 0 1 1 12.3 8.1v3.2a2.78 2.78 0 1 0 2.1 2.7V2Z"],
-  ["Pinterest", "https://pin.it/2iu6HHyPl", "M12 2a10 10 0 0 0-3.64 19.31c-.05-1.63-.01-3.58.41-5.2l1.18-4.99s-.3-.6-.3-1.49c0-1.4.81-2.45 1.82-2.45.86 0 1.28.65 1.28 1.43 0 .87-.55 2.17-.84 3.38-.24 1.01.5 1.83 1.49 1.83 1.79 0 3.16-1.89 3.16-4.62 0-2.42-1.74-4.11-4.23-4.11-2.88 0-4.57 2.16-4.57 4.39 0 .87.33 1.8.75 2.31.08.1.1.18.07.3l-.28 1.15c-.05.19-.15.23-.35.14-1.3-.6-2.11-2.48-2.11-3.99A10 10 0 0 0 12 2Z"],
-];
-
 export const Footer = () => {
   const [legalDocument, setLegalDocument] = useState(null);
 
@@ -35,7 +28,7 @@ export const Footer = () => {
   return (
     <footer className="border-t border-zinc-200 bg-[#D9CDBB] text-zinc-600 text-xs mt-16 selection:bg-emerald-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_repeat(3,minmax(0,1fr))] gap-x-8 gap-y-8 lg:gap-x-10">
           
           {/* Brand Column */}
           <div className="space-y-3">
@@ -62,27 +55,6 @@ export const Footer = () => {
                 <span className="text-zinc-600">Monday to Saturday, 9:00 AM – 6:00 PM PHT</span>
               </p>
             </div>
-            <div className="pt-2">
-              <h4 className="font-bold text-zinc-950 uppercase tracking-[0.16em] text-[11px] mb-3.5">
-                Follow Wearthly
-              </h4>
-              <div className="flex items-center gap-2.5">
-                {SOCIAL_LINKS.map(([label, href, icon]) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="w-8 h-8 rounded-full border border-zinc-400 flex items-center justify-center text-zinc-800 hover:bg-zinc-950 hover:text-white transition-colors"
-                  >
-                    <svg aria-hidden="true" viewBox="0 0 24 24" className="w-4 h-4 fill-current">
-                      <path d={icon} />
-                    </svg>
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Catalog Categories */}
@@ -101,7 +73,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div className="hidden">
+          <div>
             <h4 className="font-bold text-zinc-950 uppercase tracking-[0.16em] text-[11px] mb-3.5">
               Follow Wearthly
             </h4>
@@ -167,12 +139,12 @@ export const Footer = () => {
         </div>
 
         {/* Sub-Footer */}
-        <div className="border-t border-stone-300 pt-6 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-400">
+        <div className="mt-8 pt-5 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-400">
           <div className="flex items-center gap-2">
             <span>© 2026 Wearthly. All rights reserved.</span>
           </div>
 
-          <div className="flex gap-6 text-zinc-500">
+          <div className="flex items-center gap-5 text-zinc-500">
             <button
               type="button"
               onClick={() => setLegalDocument("terms")}
