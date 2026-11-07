@@ -17,11 +17,6 @@ const CLIENT_CARE_LINKS = [
   { label: "Frequently Asked Questions", to: "/about#faq" },
 ];
 
-const BRAND_LINKS = [
-  { label: "Privacy Policy", document: "privacy" },
-  { label: "Terms of Service", document: "terms" },
-];
-
 const LINK_CLASS =
   "hover:text-zinc-950 transition-colors text-left cursor-pointer text-xs";
 
@@ -33,7 +28,7 @@ export const Footer = () => {
   return (
     <footer className="border-t border-zinc-200 bg-[#D9CDBB] text-zinc-600 text-xs mt-16 selection:bg-emerald-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_repeat(4,minmax(0,1fr))] gap-x-8 gap-y-8 lg:gap-x-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_repeat(3,minmax(0,1fr))] gap-x-8 gap-y-8 lg:gap-x-10">
           
           {/* Brand Column */}
           <div className="space-y-3">
@@ -44,19 +39,19 @@ export const Footer = () => {
             <p className="text-zinc-500 leading-relaxed max-w-sm text-xs">
               Fashion that looks good, feels good, and does good for the planet.
             </p>
-            <div className="pt-1 space-y-1.5 text-zinc-500 text-[11px]">
-              <p className="flex items-center gap-2">
-                <span className="font-semibold text-zinc-800">Studio & Flagship:</span>
+            <div className="pt-1 space-y-2 text-zinc-500 text-[11px] max-w-md">
+              <p className="leading-relaxed">
+                <span className="font-semibold text-zinc-800">Studio & Flagship:</span>{" "}
                 <span className="text-zinc-600">#40 Guyabano St. Brgy. Katuparan, Taguig City</span>
               </p>
-              <p className="flex items-center gap-2">
-                <span className="font-semibold text-zinc-800">Concierge:</span>
-                <a href="mailto:wearthlycustomerservice@gmail.com" className="hover:text-zinc-950 transition-colors">
+              <p className="leading-relaxed">
+                <span className="font-semibold text-zinc-800">Concierge:</span>{" "}
+                <a href="mailto:wearthlycustomerservice@gmail.com" className="break-all hover:text-zinc-950 transition-colors">
                   wearthlycustomerservice@gmail.com
                 </a>
               </p>
-              <p className="flex items-center gap-2">
-                <span className="font-semibold text-zinc-800">Operating Hours:</span>
+              <p className="leading-relaxed">
+                <span className="font-semibold text-zinc-800">Operating Hours:</span>{" "}
                 <span className="text-zinc-600">Monday to Saturday, 9:00 AM – 6:00 PM PHT</span>
               </p>
             </div>
@@ -123,33 +118,6 @@ export const Footer = () => {
                       {item.label}
                     </a>
                   ) : item.document ? (
-                    <button
-                      type="button"
-                      onClick={() => setLegalDocument(item.document)}
-                      aria-haspopup="dialog"
-                      className={LINK_CLASS}
-                    >
-                      {item.label}
-                    </button>
-                  ) : (
-                    <Link to={item.to} className={LINK_CLASS}>
-                      {item.label}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* The Brand */}
-          <div>
-            <h4 className="font-bold text-zinc-950 uppercase tracking-[0.16em] text-[11px] mb-3.5">
-              The Brand
-            </h4>
-            <ul className="space-y-2 text-zinc-500">
-              {BRAND_LINKS.map((item) => (
-                <li key={item.label}>
-                  {item.document ? (
                     <button
                       type="button"
                       onClick={() => setLegalDocument(item.document)}
