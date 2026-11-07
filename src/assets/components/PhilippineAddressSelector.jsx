@@ -8,6 +8,14 @@ import {
 
 const selectClass =
   "w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none focus:border-zinc-900";
+const ADDRESS_DATA_URL =
+  "https://isaacdarcilla.github.io/philippine-addresses";
+
+const fetchAddressData = async (file) => {
+  const response = await fetch(`${ADDRESS_DATA_URL}/${file}.json`);
+  if (!response.ok) throw new Error(`Unable to load ${file} data`);
+  return response.json();
+};
 
 export const PhilippineAddressSelector = ({
   register,
@@ -55,7 +63,25 @@ export const PhilippineAddressSelector = ({
       return;
     }
     provinces(regionCode)
-      .then((items) => setProvinceOptions(Array.isArray(items) ? items : []))
+      .then(async (items) => {
+        const provinceItems = Array.isArray(items) ? items : [];
+        if (provinceItems.length) {
+          setProvinceOptions(provinceItems);
+          return;
+        }
+
+        const allCities = await fetchAddressData("city");
+        setProvinceOptions([
+          {
+            province_code: regionCode,
+            province_name: "City / Municipality",
+            region_code: regionCode,
+          },
+        ]);
+        setCityOptions(
+          allCities.filter((item) => item.region_desc === regionCode),
+        );
+      })
       .catch(() => setProvinceOptions([]));
   }, [regionCode]);
 
@@ -74,9 +100,23 @@ export const PhilippineAddressSelector = ({
       return;
     }
     cities(provinceCode)
-      .then((items) => setCityOptions(Array.isArray(items) ? items : []))
+      .then(async (items) => {
+        const cityItems = Array.isArray(items) ? items : [];
+        if (cityItems.length) {
+          setCityOptions(cityItems);
+          return;
+        }
+        const allCities = await fetchAddressData("city");
+        setCityOptions(
+          allCities.filter(
+            (item) =>
+              item.province_code === provinceCode ||
+              item.region_desc === regionCode,
+          ),
+        );
+      })
       .catch(() => setCityOptions([]));
-  }, [provinceCode]);
+  }, [provinceCode, regionCode]);
 
   useEffect(() => {
     if (!cityCode && cityName && cityOptions.length) {
@@ -91,8 +131,27 @@ export const PhilippineAddressSelector = ({
       return;
     }
     barangays(cityCode)
-      .then((items) => setBarangayOptions(Array.isArray(items) ? items : []))
-      .catch(() => setBarangayOptions([]));
+      .then(async (items) => {
+        const barangayItems = Array.isArray(items) ? items : [];
+        if (barangayItems.length) {
+          setBarangayOptions(barangayItems);
+          return;
+        }
+        const allBarangays = await fetchAddressData("barangay");
+        setBarangayOptions(
+          allBarangays.filter((item) => item.city_code === cityCode),
+        );
+      })
+      .catch(async () => {
+        try {
+          const allBarangays = await fetchAddressData("barangay");
+          setBarangayOptions(
+            allBarangays.filter((item) => item.city_code === cityCode),
+          );
+        } catch {
+          setBarangayOptions([]);
+        }
+      });
   }, [cityCode]);
 
   const update = (field, value) =>
