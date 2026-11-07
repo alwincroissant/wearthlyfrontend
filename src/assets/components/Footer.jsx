@@ -10,7 +10,10 @@ const SHOP_LINKS = [
 
 const CLIENT_CARE_LINKS = [
   { label: "Shipping & Delivery", to: "/about#faq" },
-  { label: "Care Guide", to: "/about#faq" },
+  {
+    label: "Care Guide",
+    href: "https://www.facebook.com/photo/?fbid=122094058287366647&set=pb.61590999411219.-2207520000",
+  },
   { label: "Frequently Asked Questions", to: "/about#faq" },
 ];
 
@@ -29,11 +32,11 @@ export const Footer = () => {
 
   return (
     <footer className="border-t border-zinc-200 bg-[#D9CDBB] text-zinc-600 text-xs mt-16 selection:bg-emerald-100">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_repeat(4,minmax(0,1fr))] gap-x-8 gap-y-8 lg:gap-x-7">
           
           {/* Brand Column */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2.5 w-fit">
               <img src="/wearthlylogo.ico" alt="Wearthly" className="w-9 h-9 rounded-full object-cover" />
               <span className="text-sm sm:text-base font-extrabold tracking-[0.22em] text-zinc-950 uppercase">Wearthly</span>
@@ -41,7 +44,7 @@ export const Footer = () => {
             <p className="text-zinc-500 leading-relaxed max-w-sm text-xs">
               Fashion that looks good, feels good, and does good for the planet.
             </p>
-            <div className="pt-2 space-y-1.5 text-zinc-500 text-[11px]">
+            <div className="pt-1 space-y-1.5 text-zinc-500 text-[11px]">
               <p className="flex items-center gap-2">
                 <span className="font-semibold text-zinc-800">Studio & Flagship:</span>
                 <span className="text-zinc-600">#40 Guyabano St. Brgy. Katuparan, Taguig City</span>
@@ -110,7 +113,16 @@ export const Footer = () => {
             <ul className="space-y-2 text-zinc-500">
               {CLIENT_CARE_LINKS.map((item) => (
                 <li key={item.label}>
-                  {item.document ? (
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={LINK_CLASS}
+                    >
+                      {item.label}
+                    </a>
+                  ) : item.document ? (
                     <button
                       type="button"
                       onClick={() => setLegalDocument(item.document)}
@@ -159,7 +171,7 @@ export const Footer = () => {
         </div>
 
         {/* Sub-Footer */}
-        <div className="mt-12 pt-6 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-400">
+        <div className="mt-8 pt-5 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-400">
           <div className="flex items-center gap-2">
             <span>© 2026 Wearthly. All rights reserved.</span>
           </div>
