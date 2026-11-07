@@ -244,7 +244,13 @@ export const ProductDetails = () => {
     count: reviews.filter((r) => r.rating === star).length,
   }));
 
-  const otherReviews = reviews.filter((r) => r.user?._id !== user?._id);
+  const otherReviews = reviews
+    .filter((r) => r.user?._id !== user?._id)
+    .sort(
+      (a, b) =>
+        Number(b.rating || 0) - Number(a.rating || 0) ||
+        new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+    );
 
   // Filter reviews dynamically based on star rating, verified badge, and keyword
   const filteredOtherReviews = otherReviews.filter((r) => {
