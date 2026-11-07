@@ -5,23 +5,16 @@ import { LegalModal } from "./LegalModal";
 const SHOP_LINKS = [
   { label: "New Arrivals", to: "/shop" },
   { label: "Everyday Pieces", to: "/shop" },
-  { label: "Mindful Materials", to: "/about" },
   { label: "Comfort Essentials", to: "/shop" },
 ];
 
 const CLIENT_CARE_LINKS = [
-  { label: "Order Tracking", to: "/orders" },
   { label: "Shipping & Delivery", to: "/about#faq" },
-  { label: "Returns & Exchanges", document: "refunds" },
-  { label: "Size & Fit Guide", to: "/about#faq" },
   { label: "Care Guide", to: "/about#faq" },
   { label: "Frequently Asked Questions", to: "/about#faq" },
 ];
 
 const BRAND_LINKS = [
-  { label: "About Wearthly", to: "/about" },
-  { label: "Our Story", to: "/about" },
-  { label: "Store Locations", to: "/about#contact" },
   { label: "Privacy Policy", document: "privacy" },
   { label: "Terms of Service", document: "terms" },
 ];
@@ -80,6 +73,33 @@ export const Footer = () => {
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-zinc-950 uppercase tracking-[0.16em] text-[11px] mb-3.5">
+              Follow Wearthly
+            </h4>
+            <div className="flex items-center gap-2.5">
+              {[
+                ["Instagram", "https://instagram.com/wearthlyph", "M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5a4.25 4.25 0 0 0-4.25-4.25h-8.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm5.25-2.25a1.125 1.125 0 1 1 0 2.25 1.125 1.125 0 0 1 0-2.25Z"],
+                ["Facebook", "https://facebook.com/wearthly", "M13.5 22v-8h2.75l.5-3h-3.25V9.05c0-.87.29-1.55 1.6-1.55h1.7V4.82c-.3-.04-1.33-.13-2.53-.13-2.5 0-4.22 1.53-4.22 4.34V11H7.2v3h2.85v8h3.45Z"],
+                ["TikTok", "https://tiktok.com/@wearthly.ph", "M14.4 2h3.05c.2 1.7 1.15 3.08 2.8 3.65v3.08a8.6 8.6 0 0 1-2.78-.9v6.2A5.97 5.97 0 1 1 12.3 8.1v3.2a2.78 2.78 0 1 0 2.1 2.7V2Z"],
+                ["Pinterest", "https://pin.it/2iu6HHyPl", "M12 2a10 10 0 0 0-3.64 19.31c-.05-1.63-.01-3.58.41-5.2l1.18-4.99s-.3-.6-.3-1.49c0-1.4.81-2.45 1.82-2.45.86 0 1.28.65 1.28 1.43 0 .87-.55 2.17-.84 3.38-.24 1.01.5 1.83 1.49 1.83 1.79 0 3.16-1.89 3.16-4.62 0-2.42-1.74-4.11-4.23-4.11-2.88 0-4.57 2.16-4.57 4.39 0 .87.33 1.8.75 2.31.08.1.1.18.07.3l-.28 1.15c-.05.19-.15.23-.35.14-1.3-.6-2.11-2.48-2.11-3.99 0-3.25 2.36-6.24 6.81-6.24 3.57 0 6.35 2.54 6.35 5.94 0 3.55-2.24 6.4-5.35 6.4-1.04 0-2.02-.54-2.36-1.17l-.64 2.44c-.23.89-.86 2.01-1.28 2.69A10 10 0 1 0 12 2Z"],
+              ].map(([label, href, icon]) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-8 h-8 rounded-full border border-zinc-400 flex items-center justify-center text-zinc-800 text-sm font-bold hover:bg-zinc-950 hover:text-white transition-colors"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="w-4 h-4 fill-current">
+                    <path d={icon} />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Client Care */}
@@ -160,14 +180,6 @@ export const Footer = () => {
               className={LINK_CLASS}
             >
               Privacy Policy
-            </button>
-            <button
-              type="button"
-              onClick={() => setLegalDocument("refunds")}
-              aria-haspopup="dialog"
-              className={LINK_CLASS}
-            >
-              Returns & Exchanges
             </button>
           </div>
         </div>

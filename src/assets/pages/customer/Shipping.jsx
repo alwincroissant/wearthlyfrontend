@@ -17,6 +17,7 @@ import {
 import { ProductImagePlaceholder } from "../../components/ProductImagePlaceholder";
 import { CheckoutStepper } from "../../components/CheckoutStepper";
 import { toast } from "react-toastify";
+import { PhilippineAddressSelector } from "../../components/PhilippineAddressSelector";
 
 const BRANCHES = [
   {
@@ -109,6 +110,8 @@ export const Shipping = () => {
 
       // Courier delivery address (if parts delivery chosen)
       address: shippingInfo?.address || "",
+      region: shippingInfo?.region || "",
+      province: shippingInfo?.province || "",
       barangay: shippingInfo?.barangay || "",
       city: shippingInfo?.city || "",
       postalCode: shippingInfo?.postalCode || "",
@@ -122,6 +125,8 @@ export const Shipping = () => {
   const {
     control: addressControl,
     register: registerAddress,
+    setValue: setAddressValue,
+    watch: watchAddress,
     handleSubmit: handleSubmitAddress,
     reset: resetAddress,
     trigger: triggerAddress,
@@ -132,6 +137,8 @@ export const Shipping = () => {
     defaultValues: {
       label: "Home",
       street: "",
+      region: "",
+      province: "",
       barangay: "",
       city: "",
       postalCode: "",
@@ -150,6 +157,8 @@ export const Shipping = () => {
 
   const applyAddressToForm = (addr) => {
     setValue("address", addr.street || "");
+    setValue("region", addr.region || "");
+    setValue("province", addr.province || "");
     setValue("barangay", addr.barangay || "");
     setValue("city", addr.city || "");
     setValue("postalCode", addr.postalCode || "");
@@ -188,6 +197,8 @@ export const Shipping = () => {
     resetAddress({
       label: "Home",
       street: "",
+      region: "",
+      province: "",
       barangay: "",
       city: "",
       postalCode: "",
@@ -201,6 +212,8 @@ export const Shipping = () => {
     resetAddress({
       label: addr.label || "Home",
       street: addr.street || "",
+      region: addr.region || "",
+      province: addr.province || "",
       barangay: addr.barangay || "",
       city: addr.city || "",
       postalCode: addr.postalCode || "",
@@ -223,6 +236,8 @@ export const Shipping = () => {
 
     if (newId) setExplicitAddressId(newId);
     setValue("address", saved?.street || data.street);
+    setValue("region", saved?.region || data.region);
+    setValue("province", saved?.province || data.province);
     setValue("barangay", saved?.barangay || data.barangay);
     setValue("city", saved?.city || data.city);
     setValue("postalCode", saved?.postalCode || data.postalCode);
@@ -239,6 +254,8 @@ export const Shipping = () => {
     toast.success("Address updated successfully!");
     if (selectedAddressId === editingAddressId) {
       setValue("address", data.street);
+      setValue("region", data.region);
+      setValue("province", data.province);
       setValue("barangay", data.barangay);
       setValue("city", data.city);
       setValue("postalCode", data.postalCode);
@@ -292,6 +309,8 @@ export const Shipping = () => {
 
       const saved = typeof res === "object" ? res : null;
       payload.address = saved?.street || addressDraft.street;
+      payload.region = saved?.region || addressDraft.region;
+      payload.province = saved?.province || addressDraft.province;
       payload.barangay = saved?.barangay || addressDraft.barangay;
       payload.city = saved?.city || addressDraft.city;
       payload.postalCode = saved?.postalCode || addressDraft.postalCode;
@@ -686,59 +705,15 @@ export const Shipping = () => {
                                 </select>
                               </div>
 
-                              <div className="sm:col-span-2">
-                                <label className="block text-zinc-600 font-medium mb-1">
-                                  Street Address / House or Unit No. <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  {...registerAddress("street")}
-                                  placeholder="Block 03 Lot 18, Palayan Village"
-                                  className={`w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none ${
-                                    addressFormErrors.street ? "border-red-500" : "border-zinc-300 focus:border-zinc-900"
-                                  }`}
-                                />
-                                {addressFormErrors.street && (
-                                  <p className="text-[11px] text-red-600 mt-1">{addressFormErrors.street.message}</p>
-                                )}
-                              </div>
                             </div>
 
+                            <PhilippineAddressSelector
+                              register={registerAddress}
+                              setValue={setAddressValue}
+                              watch={watchAddress}
+                              errors={addressFormErrors}
+                            />
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                              <div>
-                                <label className="block text-zinc-600 font-medium mb-1">
-                                  Barangay <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  {...registerAddress("barangay")}
-                                  placeholder="e.g. Bagumbayan"
-                                  className={`w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none ${
-                                    addressFormErrors.barangay ? "border-red-500" : "border-zinc-300 focus:border-zinc-900"
-                                  }`}
-                                />
-                                {addressFormErrors.barangay && (
-                                  <p className="text-[11px] text-red-600 mt-1">{addressFormErrors.barangay.message}</p>
-                                )}
-                              </div>
-
-                              <div>
-                                <label className="block text-zinc-600 font-medium mb-1">
-                                  City / Municipality <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  {...registerAddress("city")}
-                                  placeholder="e.g. Taguig City"
-                                  className={`w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none ${
-                                    addressFormErrors.city ? "border-red-500" : "border-zinc-300 focus:border-zinc-900"
-                                  }`}
-                                />
-                                {addressFormErrors.city && (
-                                  <p className="text-[11px] text-red-600 mt-1">{addressFormErrors.city.message}</p>
-                                )}
-                              </div>
-
                               <div>
                                 <label className="block text-zinc-600 font-medium mb-1">
                                   Postal Code <span className="text-red-500">*</span>
@@ -831,56 +806,15 @@ export const Shipping = () => {
                                 </select>
                               </div>
 
-                              <div className="sm:col-span-2">
-                                <label className="block text-zinc-600 font-medium mb-1">
-                                  Street Address / House or Unit No. <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  {...registerAddress("street")}
-                                  className={`w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none ${
-                                    addressFormErrors.street ? "border-red-500" : "border-zinc-300 focus:border-zinc-900"
-                                  }`}
-                                />
-                                {addressFormErrors.street && (
-                                  <p className="text-[11px] text-red-600 mt-1">{addressFormErrors.street.message}</p>
-                                )}
-                              </div>
                             </div>
 
+                            <PhilippineAddressSelector
+                              register={registerAddress}
+                              setValue={setAddressValue}
+                              watch={watchAddress}
+                              errors={addressFormErrors}
+                            />
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                              <div>
-                                <label className="block text-zinc-600 font-medium mb-1">
-                                  Barangay <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  {...registerAddress("barangay")}
-                                  className={`w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none ${
-                                    addressFormErrors.barangay ? "border-red-500" : "border-zinc-300 focus:border-zinc-900"
-                                  }`}
-                                />
-                                {addressFormErrors.barangay && (
-                                  <p className="text-[11px] text-red-600 mt-1">{addressFormErrors.barangay.message}</p>
-                                )}
-                              </div>
-
-                              <div>
-                                <label className="block text-zinc-600 font-medium mb-1">
-                                  City / Municipality <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  {...registerAddress("city")}
-                                  className={`w-full px-3 py-2 text-xs bg-white border rounded-lg focus:outline-none ${
-                                    addressFormErrors.city ? "border-red-500" : "border-zinc-300 focus:border-zinc-900"
-                                  }`}
-                                />
-                                {addressFormErrors.city && (
-                                  <p className="text-[11px] text-red-600 mt-1">{addressFormErrors.city.message}</p>
-                                )}
-                              </div>
-
                               <div>
                                 <label className="block text-zinc-600 font-medium mb-1">
                                   Postal Code <span className="text-red-500">*</span>

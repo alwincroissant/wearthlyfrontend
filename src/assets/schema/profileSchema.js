@@ -8,7 +8,7 @@ export const profileInfoSchema = registerSchema.pick([
 ]);
 
 export const profileAddressSchema = registerSchema
-  .pick(["street", "barangay", "city", "postalCode"])
+  .pick(["street", "region", "province", "barangay", "city", "postalCode"])
   .shape({
     label: yup.string().trim(),
   });

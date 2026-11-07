@@ -156,7 +156,7 @@ export const About = () => {
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900">
                 Thoughtful by Design
               </h2>
-              <p className="text-sm text-zinc-600 leading-relaxed">
+              <p className="text-lg sm:text-xl font-semibold text-zinc-700 leading-relaxed">
                 Welcome to WEARTHLY. We believe style should be more than what
                 you wear; it should also reflect choices that are kinder to our
                 planet. Our collection is stylish, comfortable, and thoughtfully
@@ -166,26 +166,26 @@ export const About = () => {
 
             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-8">
               <div className="space-y-2 border-t-2 border-zinc-900 pt-4">
-                <p className="font-bold text-zinc-900 text-sm tracking-wide">Custom Textile Weights</p>
-                <p className="text-xs text-zinc-600 leading-relaxed">
+                <p className="font-bold text-zinc-900 text-lg tracking-wide">Custom Textile Weights</p>
+                <p className="text-base text-zinc-700 font-semibold leading-relaxed">
                   We reduce fabric waste, reimagine materials, and give clothes a new purpose wherever we can.
                 </p>
               </div>
               <div className="space-y-2 border-t-2 border-zinc-900 pt-4">
-                <p className="font-bold text-zinc-900 text-sm tracking-wide">Global Runway Pedigree</p>
-                <p className="text-xs text-zinc-600 leading-relaxed">
+                <p className="font-bold text-zinc-900 text-lg tracking-wide">Global Runway Pedigree</p>
+                <p className="text-base text-zinc-700 font-semibold leading-relaxed">
                   We make sustainability feel practical, welcoming, and easy to bring into everyday life.
                 </p>
               </div>
               <div className="space-y-2 border-t-2 border-zinc-900 pt-4">
-                <p className="font-bold text-zinc-900 text-sm tracking-wide">Mindful Batching</p>
-                <p className="text-xs text-zinc-600 leading-relaxed">
+                <p className="font-bold text-zinc-900 text-lg tracking-wide">Mindful Batching</p>
+                <p className="text-base text-zinc-700 font-semibold leading-relaxed">
                   Limited production runs that curtail overstocking, honor ethical craftsmanship, and preserve collector uniqueness.
                 </p>
               </div>
               <div className="space-y-2 border-t-2 border-zinc-900 pt-4">
-                <p className="font-bold text-zinc-900 text-sm tracking-wide">Express Delivery</p>
-                <p className="text-xs text-zinc-600 leading-relaxed">
+                <p className="font-bold text-zinc-900 text-lg tracking-wide">Express Delivery</p>
+                <p className="text-base text-zinc-700 font-semibold leading-relaxed">
                   Same-week dispatch throughout the Philippine archipelago and expedited global express handling.
                 </p>
               </div>

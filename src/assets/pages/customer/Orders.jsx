@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyOrders, cancelOrder } from "../../../actions/orderActions";
@@ -9,7 +9,26 @@ const fmt = (n) => `₱${Number(n || 0).toLocaleString("en-US", { minimumFractio
 
 export const Orders = () => {
   const dispatch = useDispatch();
+  const [activeFilter, setActiveFilter] = useState("all");
   const { loading, orders = [], error } = useSelector((state) => state.myOrders);
+  const filters = [
+    ["all", "All"],
+    ["pending", "To Pay"],
+    ["processing", "To Ship"],
+    ["shipped", "To Receive"],
+    ["completed", "Completed"],
+  ];
+  const filteredOrders = useMemo(
+    () =>
+      activeFilter === "all"
+        ? orders
+        : orders.filter((order) =>
+            activeFilter === "completed"
+              ? ["completed", "delivered"].includes(order.orderStatus)
+              : order.orderStatus === activeFilter,
+          ),
+    [activeFilter, orders],
+  );
 
   useEffect(() => { dispatch(getMyOrders()); }, [dispatch]);
 
@@ -27,10 +46,26 @@ export const Orders = () => {
     <div className="min-h-screen bg-zinc-50 py-8 px-4">
       <main className="max-w-4xl mx-auto">
         <div className="flex items-end justify-between mb-6"><div><p className="text-xs uppercase tracking-wider text-emerald-700 font-semibold">Wearthly account</p><h1 className="text-2xl font-bold">My Orders</h1></div><Link to="/shop" className="text-xs text-emerald-700 hover:underline">Continue shopping</Link></div>
+        <div className="flex gap-2 overflow-x-auto border-b border-zinc-200 mb-6">
+          {filters.map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setActiveFilter(value)}
+              className={`shrink-0 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
+                activeFilter === value
+                  ? "border-emerald-600 text-emerald-700"
+                  : "border-transparent text-zinc-500 hover:text-zinc-900"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         {loading && <div className="bg-white border rounded-xl p-8 text-center text-sm text-zinc-500">Loading orders...</div>}
         {error && <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">{error}</div>}
-        {!loading && !error && !orders.length && <div className="bg-white border rounded-xl p-10 text-center"><h2 className="font-bold">No orders yet</h2><p className="text-sm text-zinc-500 mt-2">Your completed purchases will appear here.</p></div>}
-        <div className="space-y-4">{orders.map((order) => <article key={order._id} className="bg-white border rounded-xl p-5"><div className="flex items-start justify-between gap-3"><div><p className="text-xs text-zinc-500">Order {order.orderNumber}</p><h2 className="font-bold mt-1 capitalize">{order.orderStatus?.replaceAll("_", " ")}</h2></div><span className="font-bold">{fmt(order.totalPrice)}</span></div><div className="divide-y mt-4">{(order.orderItems || []).map((item) => <div key={`${order._id}-${item.product}`} className="py-3 flex gap-3"><div className="w-12 h-12 rounded bg-zinc-100 overflow-hidden">{item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <ProductImagePlaceholder name={item.name} category={item.itemType} compact />}</div><div className="flex-1"><p className="text-xs font-semibold">{item.name}</p><p className="text-[11px] text-zinc-500">Qty: {item.quantity}</p></div><span className="text-xs font-semibold">{fmt(item.price * item.quantity)}</span></div>)}</div>{!["completed", "canceled", "shipped"].includes(order.orderStatus) && <button type="button" onClick={() => handleCancel(order)} className="mt-3 text-xs text-red-600 hover:underline">Cancel order</button>}</article>)}</div>
+        {!loading && !error && !filteredOrders.length && <div className="bg-white border rounded-xl p-10 text-center"><h2 className="font-bold">{orders.length ? "No orders in this status" : "No orders yet"}</h2><p className="text-sm text-zinc-500 mt-2">{orders.length ? "Try another status filter." : "Your completed purchases will appear here."}</p></div>}
+        <div className="space-y-4">{filteredOrders.map((order) => <article key={order._id} className="bg-white border rounded-xl p-5"><div className="flex items-start justify-between gap-3"><div><p className="text-xs text-zinc-500">Order {order.orderNumber}</p><h2 className="font-bold mt-1 capitalize">{order.orderStatus?.replaceAll("_", " ")}</h2></div><span className="font-bold">{fmt(order.totalPrice)}</span></div><div className="divide-y mt-4">{(order.orderItems || []).map((item) => <div key={`${order._id}-${item.product}`} className="py-3 flex gap-3"><div className="w-12 h-12 rounded bg-zinc-100 overflow-hidden">{item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <ProductImagePlaceholder name={item.name} category={item.itemType} compact />}</div><div className="flex-1"><p className="text-xs font-semibold">{item.name}</p><p className="text-[11px] text-zinc-500">Qty: {item.quantity}</p></div><span className="text-xs font-semibold">{fmt(item.price * item.quantity)}</span></div>)}</div>{!["completed", "delivered", "canceled", "shipped"].includes(order.orderStatus) && <button type="button" onClick={() => handleCancel(order)} className="mt-3 text-xs text-red-600 hover:underline">Cancel order</button>}</article>)}</div>
       </main>
     </div>
   );

@@ -20,6 +20,8 @@ const postalCode = () =>
 export const shippingAddressSchema = yup.object({
   label: yup.string().trim(),
   street: yup.string().trim().required("Street address is required"),
+  region: yup.string().trim().required("Region is required"),
+  province: yup.string().trim().required("Province is required"),
   barangay: yup.string().trim().required("Barangay is required"),
   city: yup.string().trim().required("City / Municipality is required"),
   postalCode: postalCode(),
@@ -65,6 +67,8 @@ export const buildShippingSchema = ({
           }),
       }),
     address: addressField("Street address is required"),
+    region: addressField("Region is required"),
+    province: addressField("Province is required"),
     barangay: addressField("Barangay is required"),
     city: addressField("City / Municipality is required"),
     postalCode: yup

@@ -19,6 +19,7 @@ import {
   updateAddress,
   updateProfile,
 } from "../../../actions/profileActions";
+import { PhilippineAddressSelector } from "../../components/PhilippineAddressSelector";
 
 export const Profile = ({ activeTab = "all" }) => {
   const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
@@ -60,6 +61,8 @@ export const Profile = ({ activeTab = "all" }) => {
 
   const {
     register: registerAddress,
+    setValue: setAddressValue,
+    watch: watchAddress,
     handleSubmit: handleSubmitAddress,
     reset: resetAddress,
     formState: { errors: addressErrors },
@@ -69,6 +72,8 @@ export const Profile = ({ activeTab = "all" }) => {
     defaultValues: {
       label: "",
       street: "",
+      region: "",
+      province: "",
       barangay: "",
       city: "",
       postalCode: "",
@@ -100,6 +105,8 @@ export const Profile = ({ activeTab = "all" }) => {
     resetAddress({
       label: address?.label ?? "",
       street: address?.street ?? "",
+      region: address?.region ?? "",
+      province: address?.province ?? "",
       barangay: address?.barangay ?? "",
       city: address?.city ?? "",
       postalCode: address?.postalCode ?? "",
@@ -112,6 +119,7 @@ export const Profile = ({ activeTab = "all" }) => {
       updateProfile({
         firstName: data.firstName,
         lastName: data.lastName,
+        fullName: `${data.firstName.trim()} ${data.lastName.trim()}`.trim(),
         contactNumber: data.contactNumber,
       }),
     );
@@ -514,47 +522,13 @@ export const Profile = ({ activeTab = "all" }) => {
                         className="h-9! w-full px-3 text-zinc-900 bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
                       />
                     </div>
+                    <PhilippineAddressSelector
+                      register={registerAddress}
+                      setValue={setAddressValue}
+                      watch={watchAddress}
+                      errors={addressErrors}
+                    />
                     <div>
-                      <label className="block text-zinc-700 font-semibold mb-1">
-                        House / Unit #, Street
-                      </label>
-                      <input
-                        type="text"
-                        {...registerAddress("street")}
-                        className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
-                          addressErrors.street
-                            ? "border-red-500"
-                            : "border-zinc-300"
-                        }`}
-                      />
-                      {addressErrors.street && (
-                        <p className="mt-1 text-[11px] text-red-600">
-                          {addressErrors.street.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div className="sm:col-span-2">
-                        <label className="block text-zinc-700 font-semibold mb-1">
-                          City / Municipality
-                        </label>
-                        <input
-                          type="text"
-                          {...registerAddress("city")}
-                          className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
-                            addressErrors.city
-                              ? "border-red-500"
-                              : "border-zinc-300"
-                          }`}
-                        />
-                        {addressErrors.city && (
-                          <p className="mt-1 text-[11px] text-red-600">
-                            {addressErrors.city.message}
-                          </p>
-                        )}
-                      </div>
-                      <div>
                         <label className="block text-zinc-700 font-semibold mb-1">
                           Postal Code
                         </label>
@@ -574,27 +548,6 @@ export const Profile = ({ activeTab = "all" }) => {
                           </p>
                         )}
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-zinc-700 font-semibold mb-1">
-                        Barangay
-                      </label>
-                      <input
-                        type="text"
-                        {...registerAddress("barangay")}
-                        className={`h-9! w-full px-3 text-zinc-900 bg-white border rounded-md focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 ${
-                          addressErrors.barangay
-                            ? "border-red-500"
-                            : "border-zinc-300"
-                        }`}
-                      />
-                      {addressErrors.barangay && (
-                        <p className="mt-1 text-[11px] text-red-600">
-                          {addressErrors.barangay.message}
-                        </p>
-                      )}
-                    </div>
-
                     <div className="pt-2 flex justify-end gap-2">
                       <button
                         type="button"
