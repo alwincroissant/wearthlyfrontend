@@ -16,6 +16,10 @@ export const Register = () => {
   const dispatch = useDispatch();
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const {
     register,
     setValue,
@@ -49,7 +53,54 @@ export const Register = () => {
   const field = (name, label, type = "text") => (
     <div>
       <label className="block text-xs font-medium text-zinc-700 mb-1">{label}</label>
-      <input type={type} {...register(name)} className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 ${errors[name] ? "border-red-500 focus:ring-red-500" : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-900"}`} />
+      <div className="relative">
+        <input
+          type={
+            type === "password" && visiblePasswords[name] ? "text" : type
+          }
+          {...register(name)}
+          className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 ${
+            type === "password" ? "pr-10" : ""
+          } ${
+            errors[name]
+              ? "border-red-500 focus:ring-red-500"
+              : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-900"
+          }`}
+        />
+        {type === "password" && (
+          <button
+            type="button"
+            onClick={() =>
+              setVisiblePasswords((current) => ({
+                ...current,
+                [name]: !current[name],
+              }))
+            }
+            aria-label={visiblePasswords[name] ? `Hide ${label}` : `Show ${label}`}
+            className="absolute inset-y-0 right-0 px-3 text-zinc-500 hover:text-zinc-900"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="w-4 h-4 fill-none stroke-current"
+              strokeWidth="1.8"
+            >
+              {visiblePasswords[name] ? (
+                <>
+                  <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                  <circle cx="12" cy="12" r="2.5" />
+                </>
+              ) : (
+                <>
+                  <path d="m3 3 18 18" />
+                  <path d="M10.6 6.2A10.7 10.7 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-3 3.6M6.4 6.5C3.9 8.2 2.5 12 2.5 12s3.5 6 9.5 6c1.1 0 2.1-.2 3-.5" />
+                  <path d="M9.9 9.9a2.5 2.5 0 0 0 3.5 3.5" />
+                </>
+              )}
+            </svg>
+          </button>
+        )}
+      </div>
       {errors[name] && <p className="text-[11px] text-red-600 mt-1">{errors[name].message}</p>}
     </div>
   );
