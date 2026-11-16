@@ -127,6 +127,25 @@ export const Register = () => {
               {field("password", "Password", "password")}
               {field("confirmPassword", "Confirm password", "password")}
             </div>
+            <div>
+              <label className="flex items-start gap-2 text-xs text-zinc-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("dataConsent")}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-600"
+                />
+                <span>
+                  I agree that Wearthly may collect and use my personal data to
+                  create and manage my account, process orders, and provide
+                  delivery services.
+                </span>
+              </label>
+              {errors.dataConsent && (
+                <p className="text-[11px] text-red-600 mt-1">
+                  {errors.dataConsent.message}
+                </p>
+              )}
+            </div>
             <button type="submit" disabled={isSubmitting} className="w-full h-10 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold disabled:opacity-60">
               {isSubmitting ? "Creating account..." : "Create account"}
             </button>

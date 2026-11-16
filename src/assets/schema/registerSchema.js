@@ -56,6 +56,9 @@ const registerSchema = yup.object({
     .string()
     .required("Confirm password is required")
     .oneOf([yup.ref("password"), null], "Passwords do not match"),
+  dataConsent: yup
+    .boolean()
+    .oneOf([true], "You must agree to the use of your data"),
 });
 
 export default registerSchema;
