@@ -425,8 +425,7 @@ export const Shipping = () => {
                 <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
                   2. Delivery Details
                 </h2>
-
-                <div className="space-y-4 pt-2">
+                <div className="space-y-4">
                     <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-lg space-y-4 mt-3">
                         {/* Header */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
