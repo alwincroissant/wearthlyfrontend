@@ -5,6 +5,7 @@ import {
   SELECT_CART_ITEM,
   SELECT_ALL_CART_ITEMS,
   SAVE_SHIPPING_INFO,
+  CLEAR_SHIPPING_INFO,
   CLEAR_CART,
   CLEAR_SELECTED_ITEMS,
 } from '../constants/cartConstants'
@@ -118,6 +119,11 @@ export const cartReducer = (state = initialState, action) => {
       const updated = action.payload
       persist(state.cartItems, updated)
       return { ...state, shippingInfo: updated }
+    }
+
+    case CLEAR_SHIPPING_INFO: {
+      persist(state.cartItems, {})
+      return { ...state, shippingInfo: {} }
     }
 
     case CLEAR_SELECTED_ITEMS: {

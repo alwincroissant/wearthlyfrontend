@@ -55,6 +55,13 @@ export const Shipping = () => {
   const hasMotorcycles = selectedMotorcycles.length > 0;
   const hasParts = selectedParts.length > 0;
 
+  // Only reuse saved checkout details that belong to the signed-in account.
+  // Older persisted data has no ownerId, so it is treated as someone else's.
+  const ownShippingInfo =
+    shippingInfo?.ownerId && user?._id && shippingInfo.ownerId === user._id
+      ? shippingInfo
+      : {};
+
   // Address selection & inline management state
   const [explicitAddressId, setExplicitAddressId] = useState(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -84,23 +91,23 @@ export const Shipping = () => {
     resolver: yupResolver(shippingSchema),
     defaultValues: {
       recipientName:
-        shippingInfo?.recipientName ||
+        ownShippingInfo.recipientName ||
         (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : ""),
-      contactNumber: shippingInfo?.contactNumber || user?.contactNumber || "",
-      email: shippingInfo?.email || user?.email || "",
+      contactNumber: ownShippingInfo.contactNumber || user?.contactNumber || "",
+      email: ownShippingInfo.email || user?.email || "",
 
       // Fulfillment
       fulfillmentMethod: "delivery",
       partsFulfillmentMethod: "delivery",
 
       // Courier delivery address (if parts delivery chosen)
-      address: shippingInfo?.address || "",
-      region: shippingInfo?.region || "",
-      province: shippingInfo?.province || "",
-      barangay: shippingInfo?.barangay || "",
-      city: shippingInfo?.city || "",
-      postalCode: shippingInfo?.postalCode || "",
-      deliveryNotes: shippingInfo?.deliveryNotes || "",
+      address: ownShippingInfo.address || "",
+      region: ownShippingInfo.region || "",
+      province: ownShippingInfo.province || "",
+      barangay: ownShippingInfo.barangay || "",
+      city: ownShippingInfo.city || "",
+      postalCode: ownShippingInfo.postalCode || "",
+      deliveryNotes: ownShippingInfo.deliveryNotes || "",
 
     },
   });
@@ -270,6 +277,7 @@ export const Shipping = () => {
       ...data,
       fulfillmentMethod: "delivery",
       partsFulfillmentMethod: "delivery",
+      ownerId: user?._id || null,
     };
 
     // If adding a new address (or none saved yet), validate and save it first

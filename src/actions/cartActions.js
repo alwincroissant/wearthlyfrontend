@@ -6,6 +6,7 @@ import {
   SELECT_CART_ITEM,
   SELECT_ALL_CART_ITEMS,
   SAVE_SHIPPING_INFO,
+  CLEAR_SHIPPING_INFO,
   CLEAR_CART,
   CLEAR_SELECTED_ITEMS,
 } from '../constants/cartConstants'
@@ -107,6 +108,12 @@ export const selectAllCartItems = (selected) => (dispatch) => {
 
 export const saveShippingInfo = (shippingInfo) => (dispatch) => {
   dispatch({ type: SAVE_SHIPPING_INFO, payload: shippingInfo })
+}
+
+// Drop checkout contact/address data when the signed-in account changes so
+// one customer's details are never shown to another.
+export const clearShippingInfo = () => (dispatch) => {
+  dispatch({ type: CLEAR_SHIPPING_INFO })
 }
 
 export const clearCart = () => (dispatch) => {

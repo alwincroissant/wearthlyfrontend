@@ -10,6 +10,7 @@ import {
   LOGOUT_FAIL,
   CLEAR_ERRORS,
 } from "../constants/userConstants";
+import { clearShippingInfo } from "./cartActions";
 
 const api = import.meta.env.VITE_API;
 
@@ -62,6 +63,10 @@ export const login = (email, password) => async (dispatch) => {
 
     console.log(data);
     markLoggedIn();
+
+    // A different customer may have used this browser before. Never carry
+    // their checkout contact or delivery address into this session.
+    dispatch(clearShippingInfo());
 
     dispatch({
       type: LOGIN_SUCCESS,
@@ -117,6 +122,7 @@ export const logout = () => async (dispatch) => {
     await axios.get(`${api}/logout`, config);
 
     clearSessionMarker();
+    dispatch(clearShippingInfo());
 
     dispatch({
       type: LOGOUT_SUCCESS,
