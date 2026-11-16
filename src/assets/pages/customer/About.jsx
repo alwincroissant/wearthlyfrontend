@@ -125,20 +125,20 @@ export const About = () => {
       <section data-nav-hero-end className="bg-zinc-900 border-b border-zinc-800 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-3 gap-y-6 sm:gap-x-8">
           <div className="space-y-1">
-            <p className="text-sm font-bold text-white tracking-wide">Thoughtful Materials</p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="about-pillar-heading text-sm font-bold text-white tracking-wide">Thoughtful Materials</p>
+            <p className="about-pillar-description text-xs text-zinc-400 leading-relaxed">
               Comfortable materials and considered construction made for repeated everyday wear.
             </p>
           </div>
           <div className="space-y-1 sm:border-l sm:border-zinc-800 sm:pl-6">
-            <p className="text-sm font-bold text-white tracking-wide">Made for Real Life</p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="about-pillar-heading text-sm font-bold text-white tracking-wide">Made for Real Life</p>
+            <p className="about-pillar-description text-xs text-zinc-400 leading-relaxed">
               Designed for office teams, corporate life, schools, and communities across the Philippines.
             </p>
           </div>
           <div className="space-y-1 sm:border-l sm:border-zinc-800 sm:pl-6">
-            <p className="text-sm font-bold text-white tracking-wide">Style with Purpose</p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="about-pillar-heading text-sm font-bold text-white tracking-wide">Style with Purpose</p>
+            <p className="about-pillar-description text-xs text-zinc-400 leading-relaxed">
               Versatile pieces that help you look good, feel good, and make more mindful choices.
             </p>
           </div>

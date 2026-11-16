@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
   Slider,
@@ -19,9 +19,8 @@ import { toast } from "react-toastify";
 
 const API = import.meta.env.VITE_API;
 
-export const Shop = ({ onNavigate }) => {
+export const Shop = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Read URL query params on mount
@@ -160,14 +159,6 @@ export const Shop = ({ onNavigate }) => {
       toast.warning(warnMsg);
     } else {
       toast.success(`Added "${product.name}" to cart.`);
-    }
-  };
-
-  const handleNavigate = (path) => {
-    if (typeof onNavigate === "function") {
-      onNavigate(path);
-    } else {
-      navigate(`/${path}`);
     }
   };
 
@@ -329,7 +320,7 @@ export const Shop = ({ onNavigate }) => {
                         sx={{ fontSize: "0.95rem" }}
                       />
                       <span className="text-[11px] text-zinc-600">
-                        {star === 1 ? "1 star" : `${star} stars and down`}
+                        {star === 1 ? "1 star" : `${star} stars and below`}
                       </span>
                     </div>
                     {selectedRating === star && (
