@@ -427,9 +427,6 @@ export const Shipping = () => {
                 </h2>
 
                 <div className="space-y-4 pt-2">
-                    <span className="text-xs font-medium text-zinc-900 block">
-                      Door-to-Door Delivery
-                    </span>
                     <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-lg space-y-4 mt-3">
                         {/* Header */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
@@ -841,7 +838,7 @@ export const Shipping = () => {
               <div className="border-t border-zinc-100 pt-3 space-y-2 text-xs">
                 {partsTotal > 0 && (
                   <div className="flex justify-between text-zinc-600">
-                    <span>Parts & Accessories Subtotal</span>
+                    <span>Total Price</span>
                     <span className="font-mono text-zinc-900">{fmt(partsTotal)}</span>
                   </div>
                 )}
@@ -854,7 +851,7 @@ export const Shipping = () => {
                 )}
 
                 <div className="flex justify-between text-zinc-600">
-                  <span>Logistics & Freight</span>
+                  <span>Shipping Fee</span>
                   <span className="font-mono text-zinc-900">
                     {shippingFee > 0 ? fmt(shippingFee) : "Free (Pickup)"}
                   </span>
@@ -863,22 +860,6 @@ export const Shipping = () => {
                 <div className="flex justify-between text-sm font-bold text-zinc-900 pt-2 border-t border-zinc-100">
                   <span>Total Due</span>
                   <span className="font-mono text-emerald-700">{fmt(grandTotal)}</span>
-                </div>
-              </div>
-
-              {/* Security Badges */}
-              <div className="pt-2 border-t border-zinc-100 text-[11px] text-zinc-500 space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Official Store Sales Invoice & Receipts</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Quality & Authenticity Checked</span>
                 </div>
               </div>
             </div>
