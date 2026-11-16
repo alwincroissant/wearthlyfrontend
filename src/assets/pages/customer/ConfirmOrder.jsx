@@ -50,6 +50,11 @@ export const ConfirmOrder = () => {
     .join(", ");
 
   useEffect(() => {
+    // Once the order is placed the cart is intentionally emptied. Do not run
+    // the pre-checkout guard again or it will bounce the customer off the
+    // success screen with a "complete your delivery details" warning.
+    if (success) return;
+
     if (
       selectedItems.length === 0 ||
       !shippingInfo ||
@@ -67,6 +72,7 @@ export const ConfirmOrder = () => {
     selectedItems.length,
     shippingInfo,
     missingDeliveryMessage,
+    success,
   ]);
 
   const placeOrder = () => {
