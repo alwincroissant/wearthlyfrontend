@@ -24,14 +24,19 @@ export const ConfirmOrder = () => {
   );
   const total = itemsTotal + shippingFee;
   const requiresDeliveryAddress = true;
-  const hasCompleteDeliveryAddress = Boolean(
-    shippingInfo?.address &&
-      shippingInfo?.region &&
-      shippingInfo?.province &&
-      shippingInfo?.barangay &&
-      shippingInfo?.city &&
-      /^\d{4}$/.test(String(shippingInfo?.postalCode || "")),
-  );
+  const isFilled = (value) => typeof value === "string" && value.trim().length > 0;
+  const missingDeliveryFields = [
+    !isFilled(shippingInfo?.address) && "street address",
+    !isFilled(shippingInfo?.region) && "region",
+    !isFilled(shippingInfo?.province) && "province",
+    !isFilled(shippingInfo?.barangay) && "barangay",
+    !isFilled(shippingInfo?.city) && "city",
+    !/^\d{4}$/.test(String(shippingInfo?.postalCode || "").trim()) && "4-digit postal code",
+  ].filter(Boolean);
+  const hasCompleteDeliveryAddress = missingDeliveryFields.length === 0;
+  const missingDeliveryMessage = missingDeliveryFields.length
+    ? `Missing or invalid: ${missingDeliveryFields.join(", ")}.`
+    : "";
 
   const fullAddress = [
     shippingInfo?.address,
@@ -50,7 +55,9 @@ export const ConfirmOrder = () => {
       !shippingInfo ||
       (requiresDeliveryAddress && !hasCompleteDeliveryAddress)
     ) {
-      toast.warning("Please complete your delivery details before continuing.");
+      toast.warning(
+        `Please complete your delivery details before continuing. ${missingDeliveryMessage}`.trim(),
+      );
       navigate("/checkout/shipping", { replace: true });
     }
   }, [
@@ -59,11 +66,14 @@ export const ConfirmOrder = () => {
     requiresDeliveryAddress,
     selectedItems.length,
     shippingInfo,
+    missingDeliveryMessage,
   ]);
 
   const placeOrder = () => {
     if (!shippingInfo || (requiresDeliveryAddress && !hasCompleteDeliveryAddress)) {
-      toast.warning("Please complete your delivery details before placing the order.");
+      toast.warning(
+        `Please complete your delivery details before placing the order. ${missingDeliveryMessage}`.trim(),
+      );
       navigate("/checkout/shipping", { replace: true });
       return;
     }

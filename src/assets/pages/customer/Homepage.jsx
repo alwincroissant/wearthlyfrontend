@@ -598,12 +598,7 @@ export const Homepage = ({ onNavigate }) => {
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-zinc-200 text-xs">
-              <div className="flex items-center gap-2 text-zinc-600">
-                <span className="w-2 h-2 rounded-full bg-emerald-600" />
-                <span>
-                  Complimentary nationwide shipping automatically applied on all orders above ₱2,500.
-                </span>
-              </div>
+              <div className="flex items-center gap-2 text-zinc-600"></div>
               <button
                 type="button"
                 onClick={() => onNavigate ? onNavigate("orders") : navigate("/orders")}

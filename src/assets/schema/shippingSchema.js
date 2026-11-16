@@ -31,11 +31,11 @@ export const shippingAddressSchema = yup.object({
 export const buildShippingSchema = ({
   requireAddress = true,
 } = {}) => {
+  // When the customer is entering a brand-new address, that address lives in
+  // its own form and is validated/saved separately. The hidden address fields
+  // on the main form must not block the submit with "required" errors.
   const addressField = (message) =>
-    yup
-      .string()
-      .trim()
-      .required(message);
+    requireAddress ? yup.string().trim().required(message) : yup.string().trim();
 
   return yup.object({
     recipientName: yup.string().trim().required("Full name is required"),
@@ -52,14 +52,13 @@ export const buildShippingSchema = ({
     province: addressField("Province is required"),
     barangay: addressField("Barangay is required"),
     city: addressField("City / Municipality is required"),
-    postalCode: yup
-      .string()
-      .trim()
-      .matches(/^\d{4}$/, {
-        message: "Postal code is required",
-        excludeEmptyString: true,
-      })
-      .required("Postal code is required"),
+    postalCode: requireAddress
+      ? yup
+          .string()
+          .trim()
+          .required("Postal code is required")
+          .matches(/^\d{4}$/, "Postal code is required")
+      : yup.string().trim(),
     deliveryNotes: yup.string().trim(),
   });
 };

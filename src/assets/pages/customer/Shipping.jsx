@@ -25,6 +25,40 @@ const fmt = (n) =>
     maximumFractionDigits: 2,
   })}`;
 
+const clean = (value) => (typeof value === "string" ? value.trim() : value || "");
+
+// Stored numbers may be formatted as +63 9xx, 09xx-xxx-xxxx, etc.
+// Normalize them to the 11-digit 09XXXXXXXXX format the form validates.
+const normalizePhone = (value) => {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("63") && digits.length === 12) return `0${digits.slice(2)}`;
+  if (digits.startsWith("9") && digits.length === 10) return `0${digits}`;
+  return digits;
+};
+
+const FIELD_LABELS = {
+  recipientName: "Full name",
+  contactNumber: "Mobile number",
+  email: "Email address",
+  address: "Street address",
+  street: "Street address",
+  region: "Region",
+  province: "Province",
+  barangay: "Barangay",
+  city: "City / Municipality",
+  postalCode: "Postal code",
+};
+
+const ADDRESS_ERROR_FIELDS = [
+  "postalCode",
+  "address",
+  "region",
+  "province",
+  "barangay",
+  "city",
+];
+
 export const Shipping = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,9 +86,6 @@ export const Shipping = () => {
     [selectedItems]
   );
 
-  const hasMotorcycles = selectedMotorcycles.length > 0;
-  const hasParts = selectedParts.length > 0;
-
   // Only reuse saved checkout details that belong to the signed-in account.
   // Older persisted data has no ownerId, so it is treated as someone else's.
   const ownShippingInfo =
@@ -73,10 +104,9 @@ export const Shipping = () => {
   const shippingSchema = useMemo(
     () =>
       buildShippingSchema({
-        hasMotorcycles,
-        requireAddress: hasParts && !isAddingNew && addresses.length > 0,
+        requireAddress: !isAddingNew && addresses.length > 0,
       }),
-    [hasMotorcycles, hasParts, isAddingNew, addresses.length],
+    [isAddingNew, addresses.length],
   );
 
   const {
@@ -91,23 +121,25 @@ export const Shipping = () => {
     resolver: yupResolver(shippingSchema),
     defaultValues: {
       recipientName:
-        ownShippingInfo.recipientName ||
+        clean(ownShippingInfo.recipientName) ||
         (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : ""),
-      contactNumber: ownShippingInfo.contactNumber || user?.contactNumber || "",
-      email: ownShippingInfo.email || user?.email || "",
+      contactNumber: normalizePhone(
+        ownShippingInfo.contactNumber || user?.contactNumber || "",
+      ),
+      email: clean(ownShippingInfo.email) || user?.email || "",
 
       // Fulfillment
       fulfillmentMethod: "delivery",
       partsFulfillmentMethod: "delivery",
 
       // Courier delivery address (if parts delivery chosen)
-      address: ownShippingInfo.address || "",
-      region: ownShippingInfo.region || "",
-      province: ownShippingInfo.province || "",
-      barangay: ownShippingInfo.barangay || "",
-      city: ownShippingInfo.city || "",
-      postalCode: ownShippingInfo.postalCode || "",
-      deliveryNotes: ownShippingInfo.deliveryNotes || "",
+      address: clean(ownShippingInfo.address),
+      region: clean(ownShippingInfo.region),
+      province: clean(ownShippingInfo.province),
+      barangay: clean(ownShippingInfo.barangay),
+      city: clean(ownShippingInfo.city),
+      postalCode: clean(ownShippingInfo.postalCode),
+      deliveryNotes: clean(ownShippingInfo.deliveryNotes),
 
     },
   });
@@ -122,6 +154,7 @@ export const Shipping = () => {
     handleSubmit: handleSubmitAddress,
     reset: resetAddress,
     trigger: triggerAddress,
+    getFieldState: getAddressFieldState,
     formState: { errors: addressFormErrors },
   } = useForm({
     mode: "onTouched",
@@ -148,13 +181,13 @@ export const Shipping = () => {
   }, [dispatch, user]);
 
   const applyAddressToForm = (addr) => {
-    setValue("address", addr.street || "");
-    setValue("region", addr.region || "");
-    setValue("province", addr.province || "");
-    setValue("barangay", addr.barangay || "");
-    setValue("city", addr.city || "");
-    setValue("postalCode", addr.postalCode || "");
-    clearErrors(["address", "barangay", "city", "postalCode"]);
+    setValue("address", clean(addr.street));
+    setValue("region", clean(addr.region));
+    setValue("province", clean(addr.province));
+    setValue("barangay", clean(addr.barangay));
+    setValue("city", clean(addr.city));
+    setValue("postalCode", clean(addr.postalCode));
+    clearErrors(["address", "region", "province", "barangay", "city", "postalCode"]);
   };
 
   // Synchronize saved addresses with the selected address (explicit or default)
@@ -272,6 +305,21 @@ export const Shipping = () => {
   const grandTotal =
     partsTotal + motoCashTotal + shippingFee;
 
+  const handleInvalid = (formErrors) => {
+    const invalid = Object.entries(formErrors).filter(([, error]) => error?.message);
+    if (!invalid.length) {
+      toast.error("Please fill in all required fields before proceeding.");
+      return;
+    }
+    const [field, error] = invalid[0];
+    const label = FIELD_LABELS[field] || field;
+    toast.error(
+      invalid.length === 1
+        ? `${label}: ${error.message}`
+        : `${label}: ${error.message} (${invalid.length} fields need attention)`,
+    );
+  };
+
   const handleContinue = async (data) => {
     const payload = {
       ...data,
@@ -284,7 +332,15 @@ export const Shipping = () => {
     if (isAddingNew || addresses.length === 0) {
       const addressValid = await triggerAddress();
       if (!addressValid) {
-        toast.error("Please fill in all required delivery address fields.");
+        const addressFields = ["street", "region", "province", "barangay", "city", "postalCode"];
+        const firstInvalid = addressFields.find(
+          (field) => getAddressFieldState(field).invalid,
+        );
+        const label = FIELD_LABELS[firstInvalid] || "Delivery address";
+        const message = firstInvalid
+          ? getAddressFieldState(firstInvalid)?.error?.message
+          : null;
+        toast.error(message ? `${label}: ${message}` : "Please fill in all required delivery address fields.");
         return;
       }
 
@@ -346,9 +402,7 @@ export const Shipping = () => {
           {/* Main Form (7 cols) */}
           <div className="lg:col-span-7">
             <form
-              onSubmit={handleSubmit(handleContinue, () =>
-                toast.error("Please fill in all required fields before proceeding."),
-              )}
+              onSubmit={handleSubmit(handleContinue, handleInvalid)}
               className="bg-white border border-zinc-200 rounded-xl shadow-xs divide-y divide-zinc-100 overflow-hidden"
               noValidate
             >
@@ -519,6 +573,11 @@ export const Shipping = () => {
                                       <p className="text-zinc-500 text-[11px] mt-0.5 pl-5">
                                         {addr.barangay}, {addr.city} {addr.postalCode}
                                       </p>
+                                      {!/^\d{4}$/.test(clean(addr.postalCode)) && (
+                                        <p className="text-[11px] text-red-600 mt-0.5 pl-5">
+                                          Postal code missing. Edit this address to fix it.
+                                        </p>
+                                      )}
                                     </div>
 
                                     <div className="mt-3 pt-2 border-t border-zinc-100 flex items-center justify-between pl-5">
@@ -554,8 +613,16 @@ export const Shipping = () => {
                                 );
                               })}
                             </div>
-                            {errors.address && (
-                              <p className="text-[11px] text-red-600">{errors.address.message}</p>
+                            {ADDRESS_ERROR_FIELDS.some((field) => errors[field]) && (
+                              <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 space-y-1">
+                                {ADDRESS_ERROR_FIELDS.filter((field) => errors[field]).map(
+                                  (field) => (
+                                    <p key={field} className="text-[11px] text-red-700">
+                                      {FIELD_LABELS[field]}: {errors[field].message}
+                                    </p>
+                                  ),
+                                )}
+                              </div>
                             )}
                           </div>
                         )}

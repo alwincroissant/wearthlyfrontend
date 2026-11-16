@@ -21,6 +21,7 @@ import {
   SET_DEFAULT_ADDRESS_SUCCESS,
   SET_DEFAULT_ADDRESS_FAIL,
 } from "../constants/profileConstants";
+import { LOGIN_REQUEST, LOGOUT_SUCCESS } from "../constants/userConstants";
 
 const initialProfileState = {
   loading: false,
@@ -34,6 +35,12 @@ const initialProfileState = {
 
 export const profileReducer = (state = initialProfileState, action) => {
   switch (action.type) {
+    // Never keep one account's saved addresses/profile in memory for the
+    // next account that signs in on the same browser.
+    case LOGIN_REQUEST:
+    case LOGOUT_SUCCESS:
+      return initialProfileState;
+
     case GET_PROFILE_REQUEST:
       return {
         ...state,
