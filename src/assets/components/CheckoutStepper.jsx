@@ -2,8 +2,8 @@ import { Box, Stepper, Step, StepLabel } from "@mui/material";
 
 const CHECKOUT_STEPS = [
   "Cart",
-  "Fulfillment and verification",
-  "Review and terms",
+  "Fulfillment and Verification",
+  "Review and Terms",
   "Complete",
 ];
 
