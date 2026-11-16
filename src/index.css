@@ -45,6 +45,18 @@
   text-rendering: optimizeLegibility;
 }
 
+.about-page h1,
+.about-page h2,
+.about-page h3,
+.about-page h4,
+.about-page .about-heading {
+  font-family: Garamond, "Cormorant Garamond", Georgia, serif;
+}
+
+.about-page p {
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
   font-family: inherit;
   color: var(--wearthly-deep-olive);

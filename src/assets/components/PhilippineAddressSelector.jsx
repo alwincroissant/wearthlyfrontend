@@ -17,6 +17,9 @@ const fetchAddressData = async (file) => {
   return response.json();
 };
 
+const formatAddressName = (name = "") =>
+  name.replace(/\bNcr\b/gi, "NCR").replace(/\bOf\b/g, "of");
+
 export const PhilippineAddressSelector = ({
   register,
   setValue,
@@ -60,11 +63,18 @@ export const PhilippineAddressSelector = ({
   useEffect(() => {
     if (!regionCode) {
       setProvinceOptions([]);
+      setCityOptions([]);
+      setBarangayOptions([]);
       return;
     }
+    setProvinceOptions([]);
+    setCityOptions([]);
+    setBarangayOptions([]);
     provinces(regionCode)
       .then(async (items) => {
-        const provinceItems = Array.isArray(items) ? items : [];
+        const provinceItems = (Array.isArray(items) ? items : []).filter(
+          (item) => String(item.region_code) === String(regionCode),
+        );
         if (provinceItems.length) {
           setProvinceOptions(provinceItems);
           return;
@@ -79,7 +89,9 @@ export const PhilippineAddressSelector = ({
           },
         ]);
         setCityOptions(
-          allCities.filter((item) => item.region_desc === regionCode),
+          allCities.filter(
+            (item) => String(item.region_desc) === String(regionCode),
+          ),
         );
       })
       .catch(() => setProvinceOptions([]));
@@ -110,8 +122,7 @@ export const PhilippineAddressSelector = ({
         setCityOptions(
           allCities.filter(
             (item) =>
-              item.province_code === provinceCode ||
-              item.region_desc === regionCode,
+              String(item.province_code) === String(provinceCode),
           ),
         );
       })
@@ -179,7 +190,7 @@ export const PhilippineAddressSelector = ({
             item.region_code || item.province_code || item.city_code || item.brgy_code;
           return (
             <option key={optionCode} value={optionValue}>
-              {optionValue}
+              {formatAddressName(optionValue)}
             </option>
           );
         })}

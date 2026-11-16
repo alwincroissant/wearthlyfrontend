@@ -382,7 +382,7 @@ export const Shipping = () => {
 
                 <div>
                   <label className="block text-xs font-medium text-zinc-700 mb-1">
-                    Full Legal Name <span className="text-red-500">*</span>
+                    Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"

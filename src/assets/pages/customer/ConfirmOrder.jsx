@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { submitCheckout, resetCheckout } from "../../../actions/orderActions";
 import { clearSuccessfulItems } from "../../../actions/cartActions";
@@ -11,6 +11,7 @@ const fmt = (n) => `₱${Number(n || 0).toLocaleString("en-US", { minimumFractio
 
 export const ConfirmOrder = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { cartItems = [], shippingInfo } = useSelector((state) => state.cart);
   const { loading, success, results, error } = useSelector((state) => state.checkout);
   const [agreedTerms, setAgreedTerms] = useState(false);
@@ -18,8 +19,43 @@ export const ConfirmOrder = () => {
   const selectedItems = useMemo(() => cartItems.filter((item) => item.selected), [cartItems]);
   const shippingFee = shippingInfo?.partsFulfillmentMethod === "delivery" ? 350 : 0;
   const total = selectedItems.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0) + shippingFee;
+  const requiresDeliveryAddress = shippingInfo?.partsFulfillmentMethod === "delivery";
+  const hasCompleteDeliveryAddress =
+    Boolean(
+      shippingInfo?.address &&
+      shippingInfo?.region &&
+      shippingInfo?.province &&
+      shippingInfo?.barangay &&
+      shippingInfo?.city &&
+      /^\d{4}$/.test(String(shippingInfo?.postalCode || "")),
+    );
+
+  useEffect(() => {
+    if (
+      selectedItems.length === 0 ||
+      !shippingInfo ||
+      (requiresDeliveryAddress && !hasCompleteDeliveryAddress)
+    ) {
+      toast.warning("Please complete your delivery details before continuing.");
+      navigate("/checkout/shipping", { replace: true });
+    }
+  }, [
+    hasCompleteDeliveryAddress,
+    navigate,
+    requiresDeliveryAddress,
+    selectedItems.length,
+    shippingInfo,
+  ]);
 
   const placeOrder = () => {
+    if (
+      !shippingInfo ||
+      (requiresDeliveryAddress && !hasCompleteDeliveryAddress)
+    ) {
+      toast.warning("Please complete your delivery details before placing the order.");
+      navigate("/checkout/shipping", { replace: true });
+      return;
+    }
     if (!agreedTerms) {
       toast.warning("Please agree to the checkout terms.");
       return;

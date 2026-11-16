@@ -7,7 +7,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import registerSchema from "../schema/registerSchema.js";
 import { LOGIN_SUCCESS } from "../../constants/userConstants";
-import { PhilippineAddressSelector } from "../components/PhilippineAddressSelector";
 
 const API = import.meta.env.VITE_API;
 
@@ -22,8 +21,6 @@ export const Register = () => {
   });
   const {
     register,
-    setValue,
-    watch,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(registerSchema), mode: "onTouched" });
@@ -125,13 +122,6 @@ export const Register = () => {
               {field("lastName", "Last name")}
             </div>
             {field("contactNumber", "Mobile number", "tel")}
-            <PhilippineAddressSelector
-              register={register}
-              setValue={setValue}
-              watch={watch}
-              errors={errors}
-            />
-            {field("postalCode", "Postal code")}
             {field("email", "Email address", "email")}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {field("password", "Password", "password")}

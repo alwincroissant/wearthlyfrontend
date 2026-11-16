@@ -220,7 +220,7 @@ export const Homepage = ({ onNavigate }) => {
             aria-label="Wearthly fashion campaign"
             className="w-full h-full object-cover object-center select-none pointer-events-none"
           >
-            <source src="/mainrecordinghomepage.mp4" type="video/mp4" />
+            <source src="/maintrailer.mp4" type="video/mp4" />
           </video>
         </div>
 

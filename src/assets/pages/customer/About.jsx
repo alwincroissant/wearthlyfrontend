@@ -94,7 +94,7 @@ export const About = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="about-page min-h-screen bg-white text-zinc-900 antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
       {/* Page Header */}
       <section
         style={{ marginTop: "calc(-1 * var(--nav-h, 56px))" }}
