@@ -70,7 +70,6 @@ export const Cart = () => {
               <h2 className="font-bold">Order summary</h2>
               <div className="flex justify-between text-sm mt-5"><span className="text-zinc-500">Selected items</span><span>{selected.length}</span></div>
               <div className="flex justify-between font-bold text-lg mt-3 pt-3 border-t"><span>Total</span><span>{fmt(subtotal)}</span></div>
-              <p className="text-[11px] text-zinc-500 mt-3">One simple transaction. Payment and fulfillment details are confirmed at checkout.</p>
               <button type="button" onClick={startCheckout} className="w-full mt-5 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm">Continue to checkout</button>
             </aside>
           </div>

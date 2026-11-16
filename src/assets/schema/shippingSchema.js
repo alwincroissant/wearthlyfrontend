@@ -29,17 +29,13 @@ export const shippingAddressSchema = yup.object({
 });
 
 export const buildShippingSchema = ({
-  hasMotorcycles = false,
-  requireAddress = false,
+  requireAddress = true,
 } = {}) => {
   const addressField = (message) =>
     yup
       .string()
       .trim()
-      .when("partsFulfillmentMethod", {
-        is: "delivery",
-        then: (schema) => (requireAddress ? schema.required(message) : schema),
-      });
+      .required(message);
 
   return yup.object({
     recipientName: yup.string().trim().required("Full name is required"),
@@ -49,23 +45,8 @@ export const buildShippingSchema = ({
       .trim()
       .required("Email address is required")
       .email("Enter a valid email address"),
-    partsFulfillmentMethod: yup
-      .string()
-      .oneOf(["delivery", "pickup"])
-      .required(),
-    branch: yup
-      .string()
-      .trim()
-      .when([], {
-        is: () => hasMotorcycles,
-        then: (schema) =>
-          schema.required("Please select an authorized showroom"),
-        otherwise: (schema) =>
-          schema.when("partsFulfillmentMethod", {
-            is: "pickup",
-            then: (s) => s.required("Please select an authorized showroom"),
-          }),
-      }),
+    fulfillmentMethod: yup.string().oneOf(["delivery"]).required(),
+    partsFulfillmentMethod: yup.string().oneOf(["delivery"]).required(),
     address: addressField("Street address is required"),
     region: addressField("Region is required"),
     province: addressField("Province is required"),
@@ -78,11 +59,7 @@ export const buildShippingSchema = ({
         message: "Postal code is required",
         excludeEmptyString: true,
       })
-      .when("partsFulfillmentMethod", {
-        is: "delivery",
-        then: (schema) =>
-          requireAddress ? schema.required("Postal code is required") : schema,
-      }),
+      .required("Postal code is required"),
     deliveryNotes: yup.string().trim(),
   });
 };

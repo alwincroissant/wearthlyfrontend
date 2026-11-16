@@ -19,16 +19,6 @@ import { CheckoutStepper } from "../../components/CheckoutStepper";
 import { toast } from "react-toastify";
 import { PhilippineAddressSelector } from "../../components/PhilippineAddressSelector";
 
-const BRANCHES = [
-  {
-    id: "wearthly-studio",
-    name: "Wearthly Studio",
-    address: "#40 Guyabano St. Brgy. Katuparan, Taguig City",
-    hours: "Monday to Saturday, 9:00 AM – 6:00 PM PHT",
-    phone: "wearthlycustomerservice@gmail.com",
-  },
-];
-
 const fmt = (n) =>
   `₱${Number(n || 0).toLocaleString("en-US", {
     minimumFractionDigits: 2,
@@ -100,13 +90,8 @@ export const Shipping = () => {
       email: shippingInfo?.email || user?.email || "",
 
       // Fulfillment
-      fulfillmentMethod: hasMotorcycles
-        ? "pickup"
-        : shippingInfo?.fulfillmentMethod || "delivery",
-      partsFulfillmentMethod:
-        shippingInfo?.partsFulfillmentMethod ||
-        (hasParts ? "delivery" : "pickup"),
-      branch: shippingInfo?.branch || BRANCHES[0].name,
+      fulfillmentMethod: "delivery",
+      partsFulfillmentMethod: "delivery",
 
       // Courier delivery address (if parts delivery chosen)
       address: shippingInfo?.address || "",
@@ -276,24 +261,19 @@ export const Shipping = () => {
   );
 
   const shippingFee =
-    hasParts && form.partsFulfillmentMethod === "delivery" ? 350 : 0;
+    350;
   const grandTotal =
     partsTotal + motoCashTotal + shippingFee;
 
   const handleContinue = async (data) => {
     const payload = {
       ...data,
-      fulfillmentMethod: hasMotorcycles
-        ? "pickup"
-        : data.partsFulfillmentMethod,
+      fulfillmentMethod: "delivery",
+      partsFulfillmentMethod: "delivery",
     };
 
     // If adding a new address (or none saved yet), validate and save it first
-    if (
-      hasParts &&
-      data.partsFulfillmentMethod === "delivery" &&
-      (isAddingNew || addresses.length === 0)
-    ) {
+    if (isAddingNew || addresses.length === 0) {
       const addressValid = await triggerAddress();
       if (!addressValid) {
         toast.error("Please fill in all required delivery address fields.");
@@ -370,7 +350,7 @@ export const Shipping = () => {
                   Fulfillment & Contact Details
                 </h1>
                 <p className="text-xs text-zinc-500 mt-1">
-                  Please provide your contact details and specify your delivery or showroom pickup preference.
+                  Please provide your contact details and delivery address.
                 </p>
               </div>
 
@@ -443,103 +423,14 @@ export const Shipping = () => {
               {/* Section 2: Fulfillment & Logistics */}
               <div className="p-6 space-y-5">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
-                  2. Fulfillment Preference
+                  2. Delivery Details
                 </h2>
 
-                {/* Showroom Pickup for Motorcycles */}
-                {hasMotorcycles && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-zinc-900">
-                        Studio Releasing & Fitting Location
-                      </span>
-                      <span className="text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
-                        Includes Garment Inspection & Tags
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-500">
-                      Pieces can be collected in person at our studio or scheduled for express courier door-to-door delivery.
-                    </p>
-
-                    <div className="space-y-2">
-                      {BRANCHES.map((b) => (
-                        <label
-                          key={b.id}
-                          className={`flex items-start gap-3 p-3.5 border rounded-lg cursor-pointer transition-all ${
-                            form.branch === b.name
-                              ? "border-zinc-900 bg-zinc-50/80 ring-1 ring-zinc-900"
-                              : "border-zinc-200 hover:border-zinc-300"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            value={b.name}
-                            {...register("branch")}
-                            className="mt-1 accent-zinc-900 cursor-pointer"
-                          />
-                          <div className="flex-1 text-xs">
-                            <span className="font-semibold text-zinc-900 block">{b.name}</span>
-                            <span className="text-zinc-500 block mt-0.5">{b.address}</span>
-                            <span className="text-zinc-400 block mt-0.5 text-[11px]">
-                              {b.hours} • Tel: {b.phone}
-                            </span>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Parts Delivery Options */}
-                {hasParts && (
-                  <div className="space-y-4 pt-2">
+                <div className="space-y-4 pt-2">
                     <span className="text-xs font-medium text-zinc-900 block">
-                      Parts & Accessories Delivery Method
+                      Door-to-Door Delivery
                     </span>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <label
-                        className={`flex items-start gap-3 p-3.5 border rounded-lg cursor-pointer transition-all ${
-                          form.partsFulfillmentMethod === "delivery"
-                            ? "border-zinc-900 bg-zinc-50/80 ring-1 ring-zinc-900"
-                            : "border-zinc-200 hover:border-zinc-300"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          value="delivery"
-                          {...register("partsFulfillmentMethod")}
-                          className="mt-1 accent-zinc-900 cursor-pointer"
-                        />
-                        <div className="text-xs">
-                          <span className="font-semibold text-zinc-900 block">Courier Delivery</span>
-                          <span className="text-zinc-500 block mt-0.5">Door-to-door (₱350 fee)</span>
-                        </div>
-                      </label>
-
-                      <label
-                        className={`flex items-start gap-3 p-3.5 border rounded-lg cursor-pointer transition-all ${
-                          form.partsFulfillmentMethod === "pickup"
-                            ? "border-zinc-900 bg-zinc-50/80 ring-1 ring-zinc-900"
-                            : "border-zinc-200 hover:border-zinc-300"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          value="pickup"
-                          {...register("partsFulfillmentMethod")}
-                          className="mt-1 accent-zinc-900 cursor-pointer"
-                        />
-                        <div className="text-xs">
-                          <span className="font-semibold text-zinc-900 block">Showroom Pickup</span>
-                          <span className="text-zinc-500 block mt-0.5">Collect at counter (Free)</span>
-                        </div>
-                      </label>
-                    </div>
-
-                    {/* Address Fields for Delivery */}
-                    {form.partsFulfillmentMethod === "delivery" && (
-                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-lg space-y-4 mt-3">
+                    <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-lg space-y-4 mt-3">
                         {/* Header */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
                           <div>
@@ -870,10 +761,8 @@ export const Shipping = () => {
                             className="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-zinc-900"
                           />
                         </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+                    </div>
+                </div>
               </div>
 
               {/* Section 3: Financing Verification (Only if installment motorcycle in cart) */}

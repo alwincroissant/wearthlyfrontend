@@ -17,9 +17,9 @@ export const ConfirmOrder = () => {
   const [agreedTerms, setAgreedTerms] = useState(false);
   const notified = useRef(false);
   const selectedItems = useMemo(() => cartItems.filter((item) => item.selected), [cartItems]);
-  const shippingFee = shippingInfo?.partsFulfillmentMethod === "delivery" ? 350 : 0;
+  const shippingFee = shippingInfo?.fulfillmentMethod === "delivery" ? 350 : 0;
   const total = selectedItems.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0) + shippingFee;
-  const requiresDeliveryAddress = shippingInfo?.partsFulfillmentMethod === "delivery";
+  const requiresDeliveryAddress = true;
   const hasCompleteDeliveryAddress =
     Boolean(
       shippingInfo?.address &&
@@ -95,11 +95,11 @@ export const ConfirmOrder = () => {
         <CheckoutStepper activeStep={2} />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <section className="lg:col-span-7 bg-white border rounded-xl divide-y">
-            <div className="p-6"><h1 className="text-xl font-bold">Review and place order</h1><p className="text-xs text-zinc-500 mt-1">One simple transaction with cash settlement at release or delivery.</p></div>
+            <div className="p-6"><h1 className="text-xl font-bold">Review and place order</h1></div>
             <div className="p-6 space-y-3">
               <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Fulfillment details</h2>
               <p className="text-sm">{shippingInfo?.recipientName}</p><p className="text-sm text-zinc-500">{shippingInfo?.contactNumber} · {shippingInfo?.email}</p>
-              <p className="text-sm text-zinc-500">{shippingInfo?.fulfillmentMethod === "pickup" ? shippingInfo?.branch : `${shippingInfo?.address}, ${shippingInfo?.city}`}</p>
+              <p className="text-sm text-zinc-500">{shippingInfo?.address}, {shippingInfo?.city}</p>
             </div>
             <div className="p-6">
               <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Payment</h2>
